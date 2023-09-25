@@ -1,0 +1,17 @@
+{
+  "name": "i_printed_it",
+  "version": "1.0.0",
+  "description": "начало\r ориентир- https://t.me/DurgerKingBot\r - [ ] создать основу бота \r - [ ] плитки с категориями\r - [ ] организовать базу данных\r   - [ ] удобное внесение новых данных\r   - [ ] пересыл из группы/по необходимости",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.63.0",
+    "nodemon": "^3.0.1"
+  }
+}
