@@ -1,9 +1,9 @@
 import pg from 'pg'
 import {config} from '../serviceKey/dbKey'
 
-(async () => console.log(await executeQuery('SELECT * FROM users')))()
+// (async () => console.log(await executeQuery('SELECT * FROM users')))()
 
-async function executeQuery(query:string) {
+export async function executeQuery(query:string) {//требующие ответ
     const client = new pg.Client(config);
 
     try {
