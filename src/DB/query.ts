@@ -1,9 +1,9 @@
 import pg from 'pg'
-import {config} from '../serviceKey/dbKey'
+import { config } from '../serviceKey/dbKey'
 
 // (async () => console.log(await executeQuery('SELECT * FROM users')))()
 
-export async function executeQuery(query:string) {//требующие ответ
+export async function executeQuery(query: string) {
     const client = new pg.Client(config);
 
     try {
@@ -11,7 +11,7 @@ export async function executeQuery(query:string) {//требующие отве�
         const result = await client.query(query); // Выполнение запроса
         await client.end();// Закрытие соединения с базой данных
         return result.rows; // Возвращаем результат запроса
-    } catch (err:any) {
+    } catch (err: any) {
         console.error('Error executing query:', err.message);
         await client.end(); // В случае ошибки также закрываем соединение с базой данных
         throw err; // Пробрасываем ошибку дальше
