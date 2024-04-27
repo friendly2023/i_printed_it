@@ -8,9 +8,10 @@ let creatTableUsers: string = `CREATE TABLE users (
 let creatTableProducts: string = `CREATE TABLE products (
     product_id varchar(6) PRIMARY KEY,
     product_name varchar(50) NOT NULL,
-    product_description varchar(1000),
-    access varchar(3) NOT NULL DEFAULT 'no',
-    price varchar(10) NOT NULL DEFAULT '0'
+    product_description varchar(1000) NOT NULL DEFAULT '*Описание отсутствует*',
+    category_name varchar(30) NOT NULL,
+    price varchar(10) NOT NULL DEFAULT '0',
+    access varchar(3) NOT NULL DEFAULT 'no'
 );`;
 
 let creatTableCategories: string = `CREATE TABLE categories (
@@ -18,16 +19,13 @@ let creatTableCategories: string = `CREATE TABLE categories (
     category_name_left varchar(30)
 );`;
 
-let creatTableProductsCategories: string =`CREATE TABLE productsCategories (
-    product_id varchar(6) PRIMARY KEY,
-    category_name varchar(30) NOT NULL
-);`;
-
 let creatTablePurchaseHistory: string = `CREATE TABLE purchaseHistory (
-    purchase_id id SERIAL PRIMARY KEY,
+    purchase_id SERIAL PRIMARY KEY,
     user_id varchar(20) NOT NULL,
-    shopping_list varchar(500) NOT NULL
+    shopping_list varchar(500) NOT NULL,
+    time_of_purchase TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );`;
+//TO_CHAR(time_of_purchase, 'YYYY-MM-DD HH24:MI')//для получения даты без секунд
 
 let creatTableShoppingCart: string = `CREATE TABLE shoppingCart (
     user_id varchar(20) NOT NULL,
