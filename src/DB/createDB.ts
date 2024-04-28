@@ -10,7 +10,7 @@ let creatTableProducts: string = `CREATE TABLE products (
     product_name varchar(50) NOT NULL,
     product_description varchar(1000) NOT NULL DEFAULT '*Описание отсутствует*',
     category_name varchar(30) NOT NULL,
-    price varchar(10) NOT NULL DEFAULT '0',
+    price varchar(13) NOT NULL DEFAULT 'Нет в наличии',
     access varchar(3) NOT NULL DEFAULT 'no'
 );`;
 
