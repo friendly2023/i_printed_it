@@ -16,6 +16,7 @@ const telegramKey_1 = require("./serviceKey/telegramKey");
 const node_telegram_bot_api_1 = __importDefault(require("node-telegram-bot-api"));
 const bot = new node_telegram_bot_api_1.default(telegramKey_1.token, { polling: true });
 const menu_1 = require("./buttons/menu");
+const requestsToDB_1 = require("./DB/requestsToDB");
 bot.setMyCommands([
     {
         command: '/start',
@@ -42,7 +43,7 @@ function outputMessage() {
         const chatId = msg.message.chat.id;
         const text = msg.data;
         if (text.slice(0, 8) == 'menuList') {
-            return yield bot.sendMessage(chatId, `список всех товаров`);
+            return yield bot.sendMessage(chatId, `список всех товаров`, yield (0, requestsToDB_1.respondsToMenuList)());
         }
     }));
 }

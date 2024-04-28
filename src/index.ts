@@ -1,7 +1,7 @@
 import { token } from './serviceKey/telegramKey';
 import TelegramApi from 'node-telegram-bot-api';
 const bot: any = new TelegramApi(token, { polling: true });
-import { creatingMenuButtons } from './buttons/menu'
+import { creatingMenuButtons, creatingMenuListButtons } from './buttons/menu';
 
 bot.setMyCommands([
     {
@@ -33,7 +33,8 @@ function outputMessage() {
         const text: string = msg.data;
 
         if (text.slice(0, 8) == 'menuList') {
-            return await bot.sendMessage(chatId, `список всех товаров`);
+            return await bot.sendMessage(chatId, `список всех товаров`,
+                await creatingMenuListButtons());
         }
     })
 }

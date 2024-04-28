@@ -1,9 +1,10 @@
-import pg from 'pg'
-import { config } from '../serviceKey/dbKey'
+import pg from 'pg';
+import { config } from '../serviceKey/dbKey';
+import { SelectResultDB } from './requestsToDB';
 
 // (async () => console.log(await executeQuery('SELECT * FROM users')))()
 
-export async function executeQuery(query: string) {
+export async function executeQuery(query: string): Promise<SelectResultDB[]> {
     const client = new pg.Client(config);
 
     try {
