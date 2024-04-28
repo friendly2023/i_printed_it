@@ -38,4 +38,11 @@ function outputMessage() {
             return yield bot.sendMessage(chatId, `Выберете вариант отображения:`, yield (0, menu_1.creatingMenuButtons)());
         }
     }));
+    bot.on('callback_query', (msg) => __awaiter(this, void 0, void 0, function* () {
+        const chatId = msg.message.chat.id;
+        const text = msg.data;
+        if (text.slice(0, 8) == 'menuList') {
+            return yield bot.sendMessage(chatId, `список всех товаров`);
+        }
+    }));
 }

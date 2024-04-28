@@ -26,6 +26,14 @@ function outputMessage() {
         if (text === '/menu') {
             return await bot.sendMessage(chatId, `Выберете вариант отображения:`, await creatingMenuButtons());
         }
-    }
-    )
+    })
+
+    bot.on('callback_query', async (msg: { message: { chat: { id: number; }; }; data: string; }) => {
+        const chatId: number = msg.message.chat.id;
+        const text: string = msg.data;
+
+        if (text.slice(0, 8) == 'menuList') {
+            return await bot.sendMessage(chatId, `список всех товаров`);
+        }
+    })
 }
