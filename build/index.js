@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const telegramKey_1 = require("./serviceKey/telegramKey");
 const node_telegram_bot_api_1 = __importDefault(require("node-telegram-bot-api"));
 const bot = new node_telegram_bot_api_1.default(telegramKey_1.token, { polling: true });
+const menu_1 = require("./buttons/menu");
 bot.setMyCommands([
     {
         command: '/start',
@@ -34,7 +35,7 @@ function outputMessage() {
             return yield bot.sendMessage(chatId, `Добро пожаловать в наш интернет-магазин! Для перехода в меню, отправьте команду /menu`);
         }
         if (text === '/menu') {
-            return yield bot.sendMessage(chatId, `Здесь будет меню`);
+            return yield bot.sendMessage(chatId, `Выберете вариант отображения:`, yield (0, menu_1.creatingMenuButtons)());
         }
     }));
 }
