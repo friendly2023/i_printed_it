@@ -10,13 +10,13 @@ let creatTableProducts: string = `CREATE TABLE products (
     product_name varchar(50) NOT NULL,
     product_description varchar(1000) NOT NULL DEFAULT '*Описание отсутствует*',
     category_name varchar(30) NOT NULL,
-    price varchar(10) NOT NULL DEFAULT '0',
+    price varchar(13) NOT NULL DEFAULT 'Нет в наличии',
     access varchar(3) NOT NULL DEFAULT 'no'
 );`;
 
 let creatTableCategories: string = `CREATE TABLE categories (
-    category_name varchar(30) PRIMARY KEY,
-    category_name_left varchar(30)
+    category_name_left varchar(30),
+    category_name varchar(30) PRIMARY KEY    
 );`;
 
 let creatTablePurchaseHistory: string = `CREATE TABLE purchaseHistory (
@@ -33,3 +33,9 @@ let creatTableShoppingCart: string = `CREATE TABLE shoppingCart (
     sum varchar(6) NOT NULL
 );`;
 
+//функции создания таблиц
+// executeQuery(creatTableUsers);
+// executeQuery(creatTableProducts);
+// executeQuery(creatTableCategories);
+// executeQuery(creatTablePurchaseHistory);
+// executeQuery(creatTableShoppingCart);
