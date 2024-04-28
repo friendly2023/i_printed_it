@@ -6,9 +6,9 @@ class Button {
 export async function creatingMenuButtons(): Promise<Button> {
     return {
         reply_markup: {
-            inline_keyboard: [[{ text: 'Список', callback_data: `new` }],
-                              [{ text: 'По категориям', callback_data: `new` }],
-                              [{ text: 'Мне повезет!', callback_data: `new` }]]
+            inline_keyboard: [[{ text: 'Список', callback_data: `menuList` }],
+                              [{ text: 'По категориям', callback_data: `menuCategories` }],
+                              [{ text: 'Мне повезет!', callback_data: `menuLike` }]]
         }
     };
 }
