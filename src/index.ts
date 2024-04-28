@@ -6,6 +6,10 @@ bot.setMyCommands([
     {
         command: '/start',
         description: 'Начальное приветствие'
+    },
+    {
+        command: '/menu',
+        description: 'Меню'
     }
 ])
 
@@ -16,7 +20,10 @@ function outputMessage() {
         const chatId: number = msg.chat.id;
 
         if (text === '/start') {
-            return await bot.sendMessage(chatId, `Добро пожаловать ${msg.from.first_name}`);
+            return await bot.sendMessage(chatId, `Добро пожаловать в наш интернет-магазин! Для перехода в меню, отправьте команду /menu`);
+        }
+        if (text === '/menu') {
+            return await bot.sendMessage(chatId, `Здесь будет меню`);
         }
     }
     )
