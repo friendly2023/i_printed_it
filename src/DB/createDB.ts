@@ -15,8 +15,8 @@ let creatTableProducts: string = `CREATE TABLE products (
 );`;
 
 let creatTableCategories: string = `CREATE TABLE categories (
-    category_name varchar(30) PRIMARY KEY,
-    category_name_left varchar(30)
+    category_name_left varchar(30),
+    category_name varchar(30) PRIMARY KEY    
 );`;
 
 let creatTablePurchaseHistory: string = `CREATE TABLE purchaseHistory (
@@ -33,8 +33,9 @@ let creatTableShoppingCart: string = `CREATE TABLE shoppingCart (
     sum varchar(6) NOT NULL
 );`;
 
-executeQuery(creatTableUsers);
-executeQuery(creatTableProducts);
-executeQuery(creatTableCategories);
-executeQuery(creatTablePurchaseHistory);
-executeQuery(creatTableShoppingCart);
+//функции создания таблиц
+// executeQuery(creatTableUsers);
+// executeQuery(creatTableProducts);
+// executeQuery(creatTableCategories);
+// executeQuery(creatTablePurchaseHistory);
+// executeQuery(creatTableShoppingCart);
