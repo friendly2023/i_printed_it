@@ -33,3 +33,8 @@ let creatTableShoppingCart: string = `CREATE TABLE shoppingCart (
     sum varchar(6) NOT NULL
 );`;
 
+executeQuery(creatTableUsers);
+executeQuery(creatTableProducts);
+executeQuery(creatTableCategories);
+executeQuery(creatTablePurchaseHistory);
+executeQuery(creatTableShoppingCart);
