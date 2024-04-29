@@ -32,11 +32,11 @@ function outputMessage() {
         const chatId: number = msg.message.chat.id;
         const text: string = msg.data;
 
-        if (text.slice(0, 8) == 'menuList') {
+        if (text == 'menuList') {
             return await bot.sendMessage(chatId, `список всех товаров`,
                 await creatingMenuListButtons());
         }
-        if (text.slice(0, 14) == 'menuCategories') {
+        if (text == 'menuCategories') {
             return await bot.sendMessage(chatId, `список всех товаров`,
                 await creatingMenuListButtonsСategory());
         }
