@@ -48,13 +48,17 @@ function outputMessage() {
         }
         if (text[0] == 'subcategories' && text.length == 2) {
             let categoryNameLeft: string = text[1];
-            return await bot.sendMessage(chatId, `список подкатегорий`,
+            return await bot.sendMessage(chatId, `Выбрана категория *${categoryNameLeft}*, выберете подкатегорию`,
                 await creatingMenuListButtonsСategory(categoryNameLeft));
         }
         if (text[0] == 'menuCategories' && text.length == 2) {
             let categoryNameLeft: string = text[1];
             return await bot.sendMessage(chatId, `Выберете из вариантов:`,
                 await creatingMenuListByCategoryButtons(categoryNameLeft));
+        }
+        if (text[0] == 'menuCategoriesTwo' && text.length == 2) {
+            let categoryName: string = text[1];
+            return await bot.sendMessage(chatId, `Открыта подкатегория *${categoryName}*`);
         }
     })
 }
