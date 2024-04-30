@@ -13,6 +13,7 @@ export class SelectResultDB {
 export async function respondsToMenuListProductNameId(): Promise<SelectResultDB[]> {
     let productName: string = `SELECT product_name, product_id
                                FROM products
+                               WHERE access='yes'
                                ORDER BY product_id;`;
 
     return executeQuery(productName)
@@ -30,7 +31,7 @@ export async function respondsToMenuListByCategory(categoryNameLeft: string): Pr
     let query: string = `SELECT products.product_id, products.product_name, categories.category_name_left, products.category_name
                                 FROM products
                                 INNER JOIN categories ON products.category_name=categories.category_name
-                                WHERE category_name_left='${categoryNameLeft}'
+                                WHERE category_name_left='${categoryNameLeft}' AND access='yes'
                                 ORDER BY product_name;`;
 
     return executeQuery(query)
