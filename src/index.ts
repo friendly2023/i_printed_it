@@ -1,7 +1,7 @@
 import { token } from './serviceKey/telegramKey';
 import TelegramApi from 'node-telegram-bot-api';
 const bot: any = new TelegramApi(token, { polling: true });
-import { creatingMenuButtons, creatingMenuListButtons, creatingMenuListButtonsСategory } from './buttons/menu';
+import { creatingMenuButtons, creatingMenuListProductNameIdButtons } from './buttons/menu';
 
 bot.setMyCommands([
     {
@@ -34,15 +34,15 @@ function outputMessage() {
 
         if (text[0] == 'menuList') {
             return await bot.sendMessage(chatId, `Общий список:`,
-                await creatingMenuListButtons());
+                await creatingMenuListProductNameIdButtons());
         }
-        if (text[0] == 'menuCategories'&& text.length == 1) {
-            return await bot.sendMessage(chatId, `Выберете категори:`,
-                await creatingMenuListButtonsСategory());
-        }
-        if (text[0] == 'menuCategories' && text.length == 2) {
-            let category: string = text[1];
-            return await bot.sendMessage(chatId, `второй уроверь категорий`);
-        }
+        // if (text[0] == 'menuCategories'&& text.length == 1) {
+        //     return await bot.sendMessage(chatId, `Выберете категори:`,
+        //         await creatingMenuListButtonsСategory());
+        // }
+        // if (text[0] == 'menuCategories' && text.length == 2) {
+        //     let category: string = text[1];
+        //     return await bot.sendMessage(chatId, `второй уроверь категорий`);
+        // }
     })
 }
