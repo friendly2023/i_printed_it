@@ -12,11 +12,12 @@ class Button {
 }
 
 export async function creatingMenuButtons(): Promise<Button> {
+    let randomProduct = await selectionRandomProduct();
     return {
         reply_markup: {
             inline_keyboard: [[{ text: 'Список', callback_data: `menuList` }],
-            [{ text: 'По категориям', callback_data: `menuCategories` }],
-            [{ text: 'Мне повезет!', callback_data: `menuLike` }]]
+                              [{ text: 'По категориям', callback_data: `menuCategories` }],
+                              [{ text: 'Мне повезет!', callback_data: `luckyMe//${randomProduct}` }]]
         }
     };
 }
@@ -56,6 +57,16 @@ async function creatingMenuListCategoryNameLeftArrButtons() {
 export async function creatingMenuListCategoryNameLeftButtons(): Promise<Button> {
     let buttonsArray: object[] = await creatingMenuListCategoryNameLeftArrButtons();
     return { reply_markup: { inline_keyboard: buttonsArray } }
+}
+//отработка кнопки МНЕ ПОВЕЗЕТ
+async function getRandomNumber(min: number, max: number): Promise<number> {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+async function selectionRandomProduct() {
+    let resultRequest: SelectResultDB[] = await respondsToMenuListProductNameId();
+    let randomNumber = await getRandomNumber(1, resultRequest.length - 1);
+    return resultRequest[randomNumber].product_id
 }
 //отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория*
 async function creatingMenuListByCategoryArrButtons(categoryNameLeft: string): Promise<object[]> {
