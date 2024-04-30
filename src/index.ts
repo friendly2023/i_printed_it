@@ -42,12 +42,12 @@ function outputMessage() {
                 await creatingMenuListProductNameIdButtons());
         }
         if (text[0] == 'menuCategories' && text.length == 1) {
-            return await bot.sendMessage(chatId, `Выберете категори:`,
+            return await bot.sendMessage(chatId, `Выберете категорию:`,
                 await creatingMenuListCategoryNameLeftButtons());
         }
         if (text[0] == 'menuCategories' && text.length == 2) {
             let categoryNameLeft: string = text[1];
-            return await bot.sendMessage(chatId, `второй уроверь категорий`,
+            return await bot.sendMessage(chatId, `Выберете подкатегорю:`,
                 await creatingMenuListButtonsСategory(categoryNameLeft));
         }
     })
