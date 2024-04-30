@@ -30,18 +30,18 @@ function outputMessage() {
 
     bot.on('callback_query', async (msg: { message: { chat: { id: number; }; }; data: string; }) => {
         const chatId: number = msg.message.chat.id;
-        const text: string = msg.data;
+        const text: string[] = msg.data.split(/\/{2}/g);;
 
-        if (text == 'menuList') {
+        if (text[0] == 'menuList') {
             return await bot.sendMessage(chatId, `Общий список:`,
                 await creatingMenuListButtons());
         }
-        if (text == 'menuCategories') {
+        if (text[0] == 'menuCategories'&& text.length == 1) {
             return await bot.sendMessage(chatId, `Выберете категори:`,
                 await creatingMenuListButtonsСategory());
         }
-        if (text.slice(0, 14) == 'menuCategories') {
-            let category: string = text.substring(14);
+        if (text[0] == 'menuCategories' && text.length == 2) {
+            let category: string = text[1];
             return await bot.sendMessage(chatId, `второй уроверь категорий`);
         }
     })
