@@ -47,6 +47,10 @@ function outputMessage() {
             return await bot.sendMessage(chatId, `Выберете категорию:`,
                 await creatingMenuListCategoryNameLeftButtons());
         }
+        if (text[0] == 'luckyMe' && text.length == 2) {
+            let randomProduct: string = text[1];
+            return await bot.sendMessage(chatId, `данные о товаре с фото`);//дописать
+        }
         if (text[0] == 'subcategories' && text.length == 2) {
             let categoryNameLeft: string = text[1];
             return await bot.sendMessage(chatId, `Выбрана категория *${categoryNameLeft}*, выберете подкатегорию`,
