@@ -2,7 +2,7 @@ import {
     SelectResultDB,
     respondsToMenuListProductNameId,
     respondsToMenuListCategoryNameLeft,
-    respondsToMenuListCategoryName
+    respondsToMenuListByCategory
 } from '../DB/requestsToDB';
 
 class Button {
@@ -56,16 +56,16 @@ export async function creatingMenuListCategoryNameLeftButtons(): Promise<Button>
     return { reply_markup: { inline_keyboard: buttonsArray } }
 }
 //отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория*
-async function creatingMenuListCategoryNameArrButtons(categoryNameLeft: string): Promise<object[]> {
-    let resultRequest: SelectResultDB[] = await respondsToMenuListCategoryName(categoryNameLeft);
-    let buttonsArray: object[] = [];
+async function creatingMenuListByCategoryArrButtons(categoryNameLeft: string): Promise<object[]> {
+    let resultRequest: SelectResultDB[] = await respondsToMenuListByCategory(categoryNameLeft);
+    let buttonsArray: object[] = [[{ text: '_Отобразить подкатегории_', callback_data: `subcategories` }]];
     for (let i = 0; i < resultRequest.length; i++) {
-        buttonsArray.push([{ text: resultRequest[i].category_name, callback_data: `menuCategoriesTwo//${resultRequest[i].category_name}` }])
+        buttonsArray.push([{ text: resultRequest[i].product_name, callback_data: `menuCategoriesTwo//${resultRequest[i].product_id}` }])
     }
     return buttonsArray
 }
 
-export async function creatingMenuListCategoryNameButtons(categoryNameLeft: string): Promise<Button> {
-    let buttonsArray: object[] = await creatingMenuListCategoryNameArrButtons(categoryNameLeft);
+export async function creatingMenuListByCategoryButtons(categoryNameLeft: string): Promise<Button> {
+    let buttonsArray: object[] = await creatingMenuListByCategoryArrButtons(categoryNameLeft);
     return { reply_markup: { inline_keyboard: buttonsArray } }
 }

@@ -26,11 +26,12 @@ export async function respondsToMenuListCategoryNameLeft(): Promise<SelectResult
     return executeQuery(categoryNameLeft)
 };
 
-export async function respondsToMenuListCategoryName(categoryNameLeft: string): Promise<SelectResultDB[]> {
-    let categoryName: string = `SELECT category_name 
-                                    FROM categories
-                                    WHERE category_name_left='${categoryNameLeft}'
-                                    ORDER BY category_name;`;
+export async function respondsToMenuListByCategory(categoryNameLeft: string): Promise<SelectResultDB[]> {
+    let query: string = `SELECT products.product_id, products.product_name, categories.category_name_left, products.category_name
+                                FROM products
+                                INNER JOIN categories ON products.category_name=categories.category_name
+                                WHERE category_name_left='${categoryNameLeft}'
+                                ORDER BY product_name;`;
 
-    return executeQuery(categoryName)
+    return executeQuery(query)
 }
