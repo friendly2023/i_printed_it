@@ -1,7 +1,12 @@
 import { token } from './serviceKey/telegramKey';
 import TelegramApi from 'node-telegram-bot-api';
 const bot: any = new TelegramApi(token, { polling: true });
-import { creatingMenuButtons, creatingMenuListProductNameIdButtons, creatingMenuListButtonsСategory} from './buttons/menu';
+import {
+    creatingMenuButtons,
+    creatingMenuListProductNameIdButtons,
+    creatingMenuListCategoryNameLeftButtons,
+    creatingMenuListButtonsСategory
+} from './buttons/menu';
 
 bot.setMyCommands([
     {
@@ -32,17 +37,18 @@ function outputMessage() {
         const chatId: number = msg.message.chat.id;
         const text: string[] = msg.data.split(/\/{2}/g);;
 
-        if (text[0] == 'menuList') {
+        if (text[0] == 'menuList' && text.length == 1) {
             return await bot.sendMessage(chatId, `Общий список:`,
                 await creatingMenuListProductNameIdButtons());
         }
-        if (text[0] == 'menuCategories'&& text.length == 1) {
+        if (text[0] == 'menuCategories' && text.length == 1) {
             return await bot.sendMessage(chatId, `Выберете категори:`,
-                await creatingMenuListButtonsСategory());
+                await creatingMenuListCategoryNameLeftButtons());
         }
-        // if (text[0] == 'menuCategories' && text.length == 2) {
-        //     let category: string = text[1];
-        //     return await bot.sendMessage(chatId, `второй уроверь категорий`);
-        // }
+        if (text[0] == 'menuCategories' && text.length == 2) {
+            let categoryNameLeft: string = text[1];
+            return await bot.sendMessage(chatId, `второй уроверь категорий`,
+                await creatingMenuListButtonsСategory(categoryNameLeft));
+        }
     })
 }

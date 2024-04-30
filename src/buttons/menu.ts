@@ -1,4 +1,9 @@
-import { SelectResultDB, respondsToMenuListProductNameId, respondsToMenuListCategoryNameLeft } from '../DB/requestsToDB';
+import {
+    SelectResultDB,
+    respondsToMenuListProductNameId,
+    respondsToMenuListCategoryNameLeft,
+    respondsToMenuListCategoryName
+} from '../DB/requestsToDB';
 
 class Button {
     reply_markup!: object;
@@ -37,7 +42,7 @@ async function rebuildingArrCategories(): Promise<string[]> {
     return oldArr.filter(a => a !== 'Другое').concat('Другое');
 }
 
-async function creatingMenuListArrButtonsСategory() {
+async function creatingMenuListCategoryNameLeftArrButtons() {
     let menuListArrCategoryNameLeft: string[] = await rebuildingArrCategories();
     let buttonsArray: object[] = []
     for (let i = 0; i < menuListArrCategoryNameLeft.length; i++) {
@@ -46,7 +51,21 @@ async function creatingMenuListArrButtonsСategory() {
     return buttonsArray
 }
 
-export async function creatingMenuListButtonsСategory(): Promise<Button> {
-    let buttonsArray: object[] = await creatingMenuListArrButtonsСategory();
+export async function creatingMenuListCategoryNameLeftButtons(): Promise<Button> {
+    let buttonsArray: object[] = await creatingMenuListCategoryNameLeftArrButtons();
+    return { reply_markup: { inline_keyboard: buttonsArray } }
+}
+//отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория*
+async function creatingMenuListCategoryNameArrButtons(categoryNameLeft: string): Promise<object[]> {
+    let resultRequest: SelectResultDB[] = await respondsToMenuListCategoryName(categoryNameLeft);
+    let buttonsArray: object[] = [];
+    for (let i = 0; i < resultRequest.length; i++) {
+        buttonsArray.push([{ text: resultRequest[i].category_name, callback_data: `menuCategoriesTwo//${resultRequest[i].category_name}` }])
+    }
+    return buttonsArray
+}
+
+export async function creatingMenuListButtonsСategory(categoryNameLeft: string): Promise<Button> {
+    let buttonsArray: object[] = await creatingMenuListCategoryNameArrButtons(categoryNameLeft);
     return { reply_markup: { inline_keyboard: buttonsArray } }
 }

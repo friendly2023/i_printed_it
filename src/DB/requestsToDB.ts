@@ -10,7 +10,7 @@ export class SelectResultDB {
     category_name_left!: string;
 }
 
-export async function respondsToMenuListProductNameId(): Promise<SelectResultDB[]> {//
+export async function respondsToMenuListProductNameId(): Promise<SelectResultDB[]> {
     let productName: string = `SELECT product_name, product_id
                                FROM products
                                ORDER BY product_id;`;
@@ -18,10 +18,19 @@ export async function respondsToMenuListProductNameId(): Promise<SelectResultDB[
     return executeQuery(productName)
 };
 
-export async function respondsToMenuListCategoryNameLeft(): Promise<SelectResultDB[]> {//
+export async function respondsToMenuListCategoryNameLeft(): Promise<SelectResultDB[]> {
     let categoryNameLeft: string = `SELECT DISTINCT category_name_left 
                                     FROM categories
                                     ORDER BY category_name_left;`;
 
     return executeQuery(categoryNameLeft)
 };
+
+export async function respondsToMenuListCategoryName(categoryNameLeft: string): Promise<SelectResultDB[]> {
+    let categoryName: string = `SELECT category_name 
+                                    FROM categories
+                                    WHERE category_name_left='${categoryNameLeft}'
+                                    ORDER BY category_name;`;
+
+    return executeQuery(categoryName)
+}
