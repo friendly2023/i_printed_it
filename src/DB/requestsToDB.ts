@@ -45,3 +45,12 @@ export async function respondsToMenuListCategoryName(categoryNameLeft: string): 
 
     return executeQuery(categoryName)
 }
+
+export async function respondsToMenuListProductNameIdSubcategory(categoryName: string): Promise<SelectResultDB[]> {
+    let query: string = `SELECT product_id, product_name
+                         FROM products
+                         WHERE category_name='${categoryName}' AND access='yes'
+                         ORDER BY product_name;`;
+
+    return executeQuery(query)
+}

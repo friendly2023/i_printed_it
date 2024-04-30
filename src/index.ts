@@ -6,7 +6,8 @@ import {
     creatingMenuListProductNameIdButtons,
     creatingMenuListCategoryNameLeftButtons,
     creatingMenuListByCategoryButtons,
-    creatingMenuListButtonsСategory
+    creatingMenuListButtonsСategory,
+    creatingMenuListProductNameIdSubcategoryButtons
 } from './buttons/menu';
 
 bot.setMyCommands([
@@ -58,7 +59,8 @@ function outputMessage() {
         }
         if (text[0] == 'menuCategoriesTwo' && text.length == 2) {
             let categoryName: string = text[1];
-            return await bot.sendMessage(chatId, `Открыта подкатегория *${categoryName}*`);
+            return await bot.sendMessage(chatId, `Открыта подкатегория *${categoryName}*`,
+                await creatingMenuListProductNameIdSubcategoryButtons(categoryName));
         }
     })
 }

@@ -3,7 +3,8 @@ import {
     respondsToMenuListProductNameId,
     respondsToMenuListCategoryNameLeft,
     respondsToMenuListByCategory,
-    respondsToMenuListCategoryName
+    respondsToMenuListCategoryName,
+    respondsToMenuListProductNameIdSubcategory
 } from '../DB/requestsToDB';
 
 class Button {
@@ -70,7 +71,7 @@ export async function creatingMenuListByCategoryButtons(categoryNameLeft: string
     let buttonsArray: object[] = await creatingMenuListByCategoryArrButtons(categoryNameLeft);
     return { reply_markup: { inline_keyboard: buttonsArray } }
 }
-//отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория* - '_Отобразить подкатегории_'
+//отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория* - 'подкатегории'
 async function creatingMenuListCategoryNameArrButtons(categoryNameLeft: string): Promise<object[]> {
     let resultRequest: SelectResultDB[] = await respondsToMenuListCategoryName(categoryNameLeft);
     let buttonsArray: object[] = [];
@@ -82,5 +83,19 @@ async function creatingMenuListCategoryNameArrButtons(categoryNameLeft: string):
 
 export async function creatingMenuListButtonsСategory(categoryNameLeft: string): Promise<Button> {
     let buttonsArray: object[] = await creatingMenuListCategoryNameArrButtons(categoryNameLeft);
+    return { reply_markup: { inline_keyboard: buttonsArray } }
+}
+//отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория* - 'подкатегории' - развернутая подкатегория
+async function creatingMenuListProductNameIdSubcategoryArrButtons(categoryName: string): Promise<object[]> {
+    let resultRequest: SelectResultDB[] = await respondsToMenuListProductNameIdSubcategory(categoryName);
+    let buttonsArray: object[] = [];
+    for (let i = 0; i < resultRequest.length; i++) {
+        buttonsArray.push([{ text: resultRequest[i].product_name, callback_data: resultRequest[i].product_id }])
+    }
+    return buttonsArray
+}
+
+export async function creatingMenuListProductNameIdSubcategoryButtons(categoryNameLeft: string): Promise<Button> {
+    let buttonsArray: object[] = await creatingMenuListProductNameIdSubcategoryArrButtons(categoryNameLeft);
     return { reply_markup: { inline_keyboard: buttonsArray } }
 }
