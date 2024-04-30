@@ -33,12 +33,16 @@ function outputMessage() {
         const text: string = msg.data;
 
         if (text == 'menuList') {
-            return await bot.sendMessage(chatId, `список всех товаров`,
+            return await bot.sendMessage(chatId, `Общий список:`,
                 await creatingMenuListButtons());
         }
         if (text == 'menuCategories') {
-            return await bot.sendMessage(chatId, `список всех товаров`,
+            return await bot.sendMessage(chatId, `Выберете категори:`,
                 await creatingMenuListButtonsСategory());
+        }
+        if (text.slice(0, 14) == 'menuCategories') {
+            let category: string = text.substring(14);
+            return await bot.sendMessage(chatId, `второй уроверь категорий`);
         }
     })
 }

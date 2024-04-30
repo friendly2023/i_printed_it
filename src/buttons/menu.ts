@@ -53,7 +53,7 @@ export async function creatingMenuListButtons(): Promise<Button> {
     return { reply_markup: { inline_keyboard: buttonsArray } }
 }
 
-async function rebuildingArrayCategories(): Promise<string[]> {
+export async function rebuildingArrayCategories(): Promise<string[]> {
     let oldArr: string[] = await creatingMenuListArr('category_name_left');
     return oldArr.filter(a => a !== 'Другое').concat('Другое');
 }
@@ -62,7 +62,7 @@ async function creatingMenuListArrButtonsСategory() {
     let menuListArrCategoryNameLeft: string[] = await rebuildingArrayCategories();
     let buttonsArray: object[] = []
     for (let i = 0; i < menuListArrCategoryNameLeft.length; i++) {
-        buttonsArray.push([{ text: menuListArrCategoryNameLeft[i], callback_data: menuListArrCategoryNameLeft[i] }])
+        buttonsArray.push([{ text: menuListArrCategoryNameLeft[i], callback_data: `menuCategories${menuListArrCategoryNameLeft[i]}` }])
     }
     return buttonsArray
 }
