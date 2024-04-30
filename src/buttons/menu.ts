@@ -65,7 +65,7 @@ async function creatingMenuListCategoryNameArrButtons(categoryNameLeft: string):
     return buttonsArray
 }
 
-export async function creatingMenuListButtonsСategory(categoryNameLeft: string): Promise<Button> {
+export async function creatingMenuListCategoryNameButtons(categoryNameLeft: string): Promise<Button> {
     let buttonsArray: object[] = await creatingMenuListCategoryNameArrButtons(categoryNameLeft);
     return { reply_markup: { inline_keyboard: buttonsArray } }
 }
