@@ -60,7 +60,7 @@ async function creatingMenuListByCategoryArrButtons(categoryNameLeft: string): P
     let resultRequest: SelectResultDB[] = await respondsToMenuListByCategory(categoryNameLeft);
     let buttonsArray: object[] = [[{ text: '_Отобразить подкатегории_', callback_data: `subcategories` }]];
     for (let i = 0; i < resultRequest.length; i++) {
-        buttonsArray.push([{ text: resultRequest[i].product_name, callback_data: `menuCategoriesTwo//${resultRequest[i].product_id}` }])
+        buttonsArray.push([{ text: resultRequest[i].product_name, callback_data: resultRequest[i].product_id }])
     }
     return buttonsArray
 }
