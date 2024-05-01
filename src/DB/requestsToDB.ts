@@ -20,27 +20,30 @@ export async function respondsToMenuListProductNameId(): Promise<SelectResultDB[
 };
 
 export async function respondsToMenuListCategoryNameLeft(): Promise<SelectResultDB[]> {
-    let categoryNameLeft: string = `SELECT DISTINCT category_name_left 
+    let categoryNameLeft: string = `SELECT DISTINCT categories.category_name_left
                                     FROM categories
-                                    ORDER BY category_name_left;`;
+                                    INNER JOIN products ON categories.category_name=products.category_name
+                                    WHERE access='yes'
+                                    ORDER BY categories.category_name_left;`;
 
     return executeQuery(categoryNameLeft)
 };
 
 export async function respondsToMenuListByCategory(categoryNameLeft: string): Promise<SelectResultDB[]> {
     let query: string = `SELECT products.product_id, products.product_name, categories.category_name_left, products.category_name
-                                FROM products
-                                INNER JOIN categories ON products.category_name=categories.category_name
-                                WHERE category_name_left='${categoryNameLeft}' AND access='yes'
-                                ORDER BY product_name;`;
+                         FROM products
+                         INNER JOIN categories ON products.category_name=categories.category_name
+                         WHERE category_name_left='${categoryNameLeft}' AND access='yes'
+                         ORDER BY product_name;`;
 
     return executeQuery(query)
 }
 
-export async function respondsToMenuListCategoryName(categoryNameLeft: string): Promise<SelectResultDB[]> {
-    let categoryName: string = `SELECT category_name 
-                                FROM categories
-                                WHERE category_name_left='${categoryNameLeft}'
+export async function respondsToMenuListCategoryName(categoryNameLeft: string): Promise<SelectResultDB[]> {//эта
+    let categoryName: string = `SELECT DISTINCT products.category_name
+                                FROM products
+                                INNER JOIN categories ON products.category_name=categories.category_name
+                                WHERE category_name_left='${categoryNameLeft}' AND access='yes'
                                 ORDER BY category_name;`;
 
     return executeQuery(categoryName)
