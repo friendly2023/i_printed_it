@@ -34,8 +34,7 @@ function workingProducts(): void {
                                           'yes');`;
     let productUpgrading: string = `UPDATE products
                                     SET category_name='Киберпанк2077'
-                                    where product_id='0048'
-                                    `;
+                                    where product_id='0048'`;
     executeQuery(productAdding);//добавить
     // executeQuery(productUpgrading);//обновить
 }
