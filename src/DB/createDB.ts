@@ -13,9 +13,16 @@ let creatTableProducts: string = `CREATE TABLE products (
     access varchar(3) NOT NULL DEFAULT 'no'
 );`;
 
-let creatTableProductsDescription: string =`CREATE TABLE productsDescription (
+let creatTableProductsDescription: string = `CREATE TABLE productsDescription (
     product_id varchar(6) PRIMARY KEY,
     product_description varchar(1000) NOT NULL DEFAULT '*Описание отсутствует*'
+);`;
+
+let creatTableProductsPhoto: string = `CREATE TABLE productsPhoto (
+    product_id varchar(6) NOT NULL,
+    image_path varchar(255) NOT NULL,
+    order_number INT NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
 );`;
 
 let creatTableCategories: string = `CREATE TABLE categories (
@@ -41,6 +48,7 @@ let creatTableShoppingCart: string = `CREATE TABLE shoppingCart (
 // executeQuery(creatTableUsers);
 // executeQuery(creatTableProducts);
 // executeQuery(creatTableProductsDescription);
+// executeQuery(creatTableProductsPhoto);
 // executeQuery(creatTableCategories);
 // executeQuery(creatTablePurchaseHistory);
 // executeQuery(creatTableShoppingCart);

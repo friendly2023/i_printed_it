@@ -8,6 +8,7 @@ export class SelectResultDB {
     price!: number;
     access!: string;
     category_name_left!: string;
+    image_path!: string;
 }
 
 export async function respondsToMenuListProductNameId(): Promise<SelectResultDB[]> {
@@ -55,5 +56,22 @@ export async function respondsToMenuListProductNameIdSubcategory(categoryName: s
                          WHERE category_name='${categoryName}' AND access='yes'
                          ORDER BY product_name;`;
 
+    return executeQuery(query)
+}
+
+export async function respondsImagePath(productId: string): Promise<SelectResultDB[]> {
+    let query: string = `SELECT productsPhoto.image_path
+                         FROM productsPhoto
+                         INNER JOIN products ON productsPhoto.product_id=products.product_id
+                         WHERE products.access='yes' and productsPhoto.product_id='${productId}'
+                         ORDER BY productsPhoto.order_number;`;
+    return executeQuery(query)
+}
+
+export async function respondsProductCard(productId: string): Promise<SelectResultDB[]> {
+    let query: string = `SELECT products.product_name, productsDescription.product_description, products.price
+                         FROM products
+                         INNER JOIN productsDescription ON products.product_id=productsDescription.product_id
+                         WHERE products.access='yes' and products.product_id='${productId}';`;
     return executeQuery(query)
 }

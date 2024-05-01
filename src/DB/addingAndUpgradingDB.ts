@@ -38,3 +38,13 @@ function workingProducts(): void {
     executeQuery(productAdding);//добавить
     // executeQuery(productUpgrading);//обновить
 }
+
+//картинки
+// workingPhoto()
+function workingPhoto(): void {
+    let photoAdding: string = `INSERT INTO productsPhoto ( product_id, image_path, order_number)
+    VALUES ('0107','https://disk.yandex.ru/i/7KGO2i0cHtc51A', 1),
+            ('0107','https://disk.yandex.ru/i/I4jEtZODkTtdow', 2),
+            ('0107','https://disk.yandex.ru/i/GZBep_eC3zMYrA', 3);`;
+    // executeQuery(photoAdding);//добавить
+}
