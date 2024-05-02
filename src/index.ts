@@ -9,6 +9,7 @@ import {
     creatingMenuListCategoryNameButtons,
     creatingMenuListProductNameIdSubcategoryButtons
 } from './buttons/menu';
+import { creatingFigurineCard, arrayPhotos } from './productCard/figurineСard';
 
 bot.setMyCommands([
     {
@@ -65,6 +66,11 @@ function outputMessage() {
             let categoryName: string = text[1];
             return await bot.sendMessage(chatId, `Открыта подкатегория *${categoryName}*`,
                 await creatingMenuListProductNameIdSubcategoryButtons(categoryName));
+        }
+        if (text[0].match(/\d{4}/g)) {
+            let id: string = text[0];
+            let figurineСard = await creatingFigurineCard(id);
+            return await bot.sendMediaGroup(chatId, figurineСard);
         }
     })
 }
