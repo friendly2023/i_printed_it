@@ -1,4 +1,4 @@
-import { respondsImagePath, respondsProductCard } from '../DB/requestsToDB';
+import { respondsImagePath, respondsProductCard, SelectResultDB } from '../DB/requestsToDB';
 
 export let arrayPhotos: ({
     type: string;
@@ -10,11 +10,10 @@ export let arrayPhotos: ({
     caption?: undefined;
 })[] = [];
 
-// (async () => console.log(await creatingFigurineCard('0107')))()
 export async function creatingFigurineCard(productId: string): Promise<typeof arrayPhotos> {
-    let resultRequest = await respondsImagePath(productId);
-    let resultBasicInfo = await respondsProductCard(productId);
-    let messageToPhoto = `"${resultBasicInfo[0].product_name}"
+    let resultRequest: SelectResultDB[] = await respondsImagePath(productId);
+    let resultBasicInfo: SelectResultDB[] = await respondsProductCard(productId);
+    let messageToPhoto: string = `"${resultBasicInfo[0].product_name}"
 Описание: ${resultBasicInfo[0].product_description}
 Стоимость: ${resultBasicInfo[0].price} Р`;
 
