@@ -45,7 +45,7 @@ async function rebuildingArrCategories(): Promise<string[]> {
     return oldArr.filter(a => a !== 'Другое').concat('Другое');
 }
 
-async function creatingMenuListCategoryNameLeftArrButtons() {
+async function creatingMenuListCategoryNameLeftArrButtons(): Promise<object[]> {
     let menuListArrCategoryNameLeft: string[] = await rebuildingArrCategories();
     let buttonsArray: object[] = []
     for (let i = 0; i < menuListArrCategoryNameLeft.length; i++) {
