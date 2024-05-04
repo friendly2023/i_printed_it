@@ -51,12 +51,11 @@ async function getRandomNumber(min: number, max: number): Promise<number> {
 
 //отработка кнопки меню
 export async function creatingMenuButtons(): Promise<ReplyMarkup> {
-    let randomProduct: Product = await selectionRandomProduct();
     return {
         reply_markup: {
             inline_keyboard: [[{ text: 'Список', callback_data: `menuList` }],
                               [{ text: 'По категориям', callback_data: `menuCategories` }],
-                              [{ text: 'Мне повезет!', callback_data: `luckyMe//${randomProduct.product_id}` }]]
+                              [{ text: 'Мне повезет!', callback_data: `luckyMe` }]]
         }
     };
 }
@@ -90,10 +89,10 @@ export async function creatingMenuListCategoryNameLeftButtons(): Promise<ReplyMa
 }
 
 //отработка кнопки МНЕ ПОВЕЗЕТ
-async function selectionRandomProduct(): Promise<Product> {
+export async function selectionRandomProduct(): Promise<string> {
     let resultRequest: Product[] = await respondsToMenuListProductNameId();
     let randomNumber: number = await getRandomNumber(1, resultRequest.length - 1);
-    return resultRequest[randomNumber]
+    return resultRequest[randomNumber].product_id
 }
 
 //отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория*
