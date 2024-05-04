@@ -45,21 +45,32 @@ function workingPhoto(): void {
 }
 
 //обновление доступности
-// (async () => console.log(await updatingAccess('0048')))()
+// (async () => console.log(await updatingAccess('0106')))()
 async function updatingAccess(id: string) {
     let checkDescription: string = `SELECT *
                                     FROM productsDescription
-                                    WHERE product_id = '${id}';`
+                                    WHERE product_id = '${id}';`;
     let checkPhoto: string = `SELECT * 
-                                FROM productsPhoto 
-                                WHERE product_id = '${id}';`
+                              FROM productsPhoto 
+                              WHERE product_id = '${id}';`;
+    let checkProducts: string = `SELECT * 
+                                 FROM products 
+                                 WHERE product_id = '${id}';`;
+    let checkCategorieId: string = `SELECT * 
+                                    FROM categorieId 
+                                    WHERE product_id = '${id}';`;
+
     let productsAccess: string = `UPDATE products
-                                    SET access='yes'
-                                    where product_id='${id}'`
-    if ((await executeQuery(checkDescription)).length != 0 && (await executeQuery(checkPhoto)).length != 0) {
+                                  SET access='yes'
+                                  WHERE product_id='${id}'`
+    if ((await executeQuery(checkDescription)).length != 0 &&
+        (await executeQuery(checkPhoto)).length != 0 &&
+        (await executeQuery(checkProducts)).length != 0 &&
+        (await executeQuery(checkCategorieId)).length != 0) {
         await executeQuery(productsAccess)
         return `Товар с ID:${id} доступен для продажи`
     } else {
         return `Товар с ID:${id} НЕ доступен для продажи`
     }
 }
+

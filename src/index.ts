@@ -7,8 +7,10 @@ import {
     creatingMenuListCategoryNameLeftButtons,
     creatingMenuListByCategoryButtons,
     creatingMenuListCategoryNameButtons,
-    creatingMenuListProductNameIdSubcategoryButtons
+    creatingMenuListProductNameIdSubcategoryButtons,
+    selectionRandomProduct
 } from './buttons/menu';
+
 import { creatingFigurineCard } from './productCard/figurineСard';
 
 bot.setMyCommands([
@@ -48,9 +50,10 @@ function outputMessage() {
             return await bot.sendMessage(chatId, `Выберете категорию:`,
                 await creatingMenuListCategoryNameLeftButtons());
         }
-        if (text[0] == 'luckyMe' && text.length == 2) {
-            let randomProduct: string = text[1];
-            return await bot.sendMessage(chatId, `данные о товаре с фото`);//дописать
+        if (text[0] == 'luckyMe' && text.length == 1) {
+            let randomProduct: string = await selectionRandomProduct();
+            let figurineСard = await creatingFigurineCard(randomProduct);
+            return await bot.sendMediaGroup(chatId, figurineСard);
         }
         if (text[0] == 'subcategories' && text.length == 2) {
             let categoryNameLeft: string = text[1];
