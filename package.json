@@ -15,7 +15,7 @@
     "@types/node-telegram-bot-api": "^0.64.6"
   },
   "dependencies": {
-    "@types/pg": "^8.11.5",
+    "@types/pg": "^8.11.6",
     "node-telegram-bot-api": "^0.65.1",
     "pg": "^8.11.5"
   }

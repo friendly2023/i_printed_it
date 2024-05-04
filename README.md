@@ -2,6 +2,12 @@
 Доп. пакеты:
 pg, node-telegram-bot-api
 
+npm install pg
+npm install --save @types/pg
+npm i node-telegram-bot-api
+npm install --save @types/node-telegram-bot-api
+
+
 Цели:
   - [x] создать таблицы: пользователи, товары, категори, история покупок, корзина
   - [x] пофиксить.выводить товары только с пометкой в графе доступности
