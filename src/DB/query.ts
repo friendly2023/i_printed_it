@@ -1,6 +1,16 @@
 import pg from 'pg';
 import { config } from '../serviceKey/dbKey';
-import { SelectResultDB } from './requestsToDB';
+
+class SelectResultDB {
+    product_id!: string;
+    product_name!: string;
+    product_description!: string;
+    category_name!: string;
+    price!: number;
+    access!: string;
+    category_name_left!: string;
+    image_path!: string;
+}
 
 // (async () => console.log(await executeQuery('SELECT * FROM users')))()
 

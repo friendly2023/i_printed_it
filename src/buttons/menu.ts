@@ -1,5 +1,4 @@
 import {
-    SelectResultDB,
     Product,
     CategoriesLeft,
     ProductsCatalog,

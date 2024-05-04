@@ -1,16 +1,5 @@
 import { executeQuery } from './query'
 
-export class SelectResultDB {
-    product_id!: string;
-    product_name!: string;
-    product_description!: string;
-    category_name!: string;
-    price!: number;
-    access!: string;
-    category_name_left!: string;
-    image_path!: string;
-}
-
 export interface Product {
     product_name: string;
     product_id: string;
@@ -29,6 +18,16 @@ export interface ProductsCatalog {
 
 export interface CategoryName {
     category_name: string
+};
+
+export interface ProductsPhoto {
+    image_path: string,
+};
+
+export interface ProductsDescription {
+    product_name: string,
+    product_description: string,
+    price: number
 }
 
 export async function respondsToMenuListProductNameId(): Promise<Product[]> {
@@ -79,7 +78,7 @@ export async function respondsToMenuListProductNameIdSubcategory(categoryName: s
     return executeQuery(query)
 }
 
-export async function respondsImagePath(productId: string): Promise<SelectResultDB[]> {
+export async function respondsImagePath(productId: string): Promise<ProductsPhoto[]> {
     let query: string = `SELECT productsPhoto.image_path
                          FROM productsPhoto
                          INNER JOIN products ON productsPhoto.product_id=products.product_id
@@ -88,7 +87,7 @@ export async function respondsImagePath(productId: string): Promise<SelectResult
     return executeQuery(query)
 }
 
-export async function respondsProductCard(productId: string): Promise<SelectResultDB[]> {
+export async function respondsProductCard(productId: string): Promise<ProductsDescription[]> {
     let query: string = `SELECT products.product_name, productsDescription.product_description, products.price
                          FROM products
                          INNER JOIN productsDescription ON products.product_id=productsDescription.product_id
