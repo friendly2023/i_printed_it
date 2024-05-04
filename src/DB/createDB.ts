@@ -8,14 +8,14 @@ let creatTableUsers: string = `CREATE TABLE users (
 let creatTableProducts: string = `CREATE TABLE products (
     product_id varchar(6) PRIMARY KEY,
     product_name varchar(50) NOT NULL,
-    category_name varchar(30) NOT NULL,
     price varchar(13) NOT NULL DEFAULT 'Нет в наличии',
     access varchar(3) NOT NULL DEFAULT 'no'
 );`;
 
 let creatTableProductsDescription: string = `CREATE TABLE productsDescription (
     product_id varchar(6) PRIMARY KEY,
-    product_description varchar(1000) NOT NULL DEFAULT '*Описание отсутствует*'
+    product_description varchar(1000) NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
 );`;
 
 let creatTableProductsPhoto: string = `CREATE TABLE productsPhoto (
@@ -28,6 +28,12 @@ let creatTableProductsPhoto: string = `CREATE TABLE productsPhoto (
 let creatTableCategories: string = `CREATE TABLE categories (
     category_name_left varchar(30),
     category_name varchar(30) PRIMARY KEY    
+);`;
+
+let creatTableCategoriesId: string = `CREATE TABLE categorieId (
+    product_id varchar(6) PRIMARY KEY,
+    category_name varchar(30) NOT NULL,
+    FOREIGN KEY (category_name) REFERENCES categories(category_name)   
 );`;
 
 let creatTablePurchaseHistory: string = `CREATE TABLE purchaseHistory (
@@ -50,5 +56,6 @@ let creatTableShoppingCart: string = `CREATE TABLE shoppingCart (
 // executeQuery(creatTableProductsDescription);
 // executeQuery(creatTableProductsPhoto);
 // executeQuery(creatTableCategories);
+// executeQuery(creatTableCategoriesId);
 // executeQuery(creatTablePurchaseHistory);
 // executeQuery(creatTableShoppingCart);
