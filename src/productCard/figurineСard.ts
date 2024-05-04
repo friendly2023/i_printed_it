@@ -32,5 +32,3 @@ export async function creatingFigurineCard(productId: string): Promise<typeof ar
         }
     });
 };
-
-(async () => console.log(await creatingFigurineCard('0046')))()
