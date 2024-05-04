@@ -2,6 +2,8 @@ import {
     SelectResultDB,
     Product,
     CategoriesLeft,
+    ProductsCatalog,
+    CategoryName,
     respondsToMenuListProductNameId,
     respondsToMenuListCategoryNameLeft,
     respondsToMenuListByCategory,
@@ -24,18 +26,8 @@ interface ReplyMarkup {
     };
 }
 
-// export async function creatingMenuButtons(): Promise<Button> {
-//     let randomProduct = await selectionRandomProduct();
-//     return {
-//         reply_markup: {
-//             inline_keyboard: [[{ text: 'Список', callback_data: `menuList` }],
-//                               [{ text: 'По категориям', callback_data: `menuCategories` }],
-//                               [{ text: 'Мне повезет!', callback_data: `luckyMe//${randomProduct}` }]]
-//         }
-//     };
-// }
-
-async function creatingInlineKeyboardButton(keys1: string, keys2: string, data: any, callbackToken?: string) {
+//общие
+async function creatingInlineKeyboardButton(keys1: string, keys2: string, data: any, callbackToken?: string): Promise<ReplyMarkup> {
     return new Promise((resolve) => {
         const inlineKeyboard: InlineKeyboardButton[][] = data.map((item: any) => [
             {
@@ -50,15 +42,33 @@ async function creatingInlineKeyboardButton(keys1: string, keys2: string, data: 
             },
         };
 
-        resolve(inlineKeyboard);
+        resolve(replyMarkup);
     });
 }
+
+async function getRandomNumber(min: number, max: number): Promise<number> {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+//отработка кнопки меню
+export async function creatingMenuButtons(): Promise<ReplyMarkup> {
+    let randomProduct: Product = await selectionRandomProduct();
+    return {
+        reply_markup: {
+            inline_keyboard: [[{ text: 'Список', callback_data: `menuList` }],
+                              [{ text: 'По категориям', callback_data: `menuCategories` }],
+                              [{ text: 'Мне повезет!', callback_data: `luckyMe//${randomProduct.product_id}` }]]
+        }
+    };
+}
+
 // отработка кнопки СПИСОК
-export async function creatingMenuListProductNameIdButtons() {
+export async function creatingMenuListProductNameIdButtons(): Promise<ReplyMarkup> {
     let resultRequest: Product[] = await respondsToMenuListProductNameId();
     let keys = Object.keys(resultRequest[0]);
     return await creatingInlineKeyboardButton(keys[0], keys[1], resultRequest);
 }
+
 //отработка кнопки ПО КАТЕГОРИЯМ
 async function rebuildingArrCategories(): Promise<CategoriesLeft[]> {
     let resultRequest: CategoriesLeft[] = await respondsToMenuListCategoryNameLeft();
@@ -74,60 +84,42 @@ async function rebuildingArrCategories(): Promise<CategoriesLeft[]> {
       return sortedData
 }
 
-export async function creatingMenuListCategoryNameLeftButtons() {
+export async function creatingMenuListCategoryNameLeftButtons(): Promise<ReplyMarkup> {
     let resultRequest: CategoriesLeft[] = await rebuildingArrCategories();
     const keys = Object.keys(resultRequest[0]);
     return await creatingInlineKeyboardButton(keys[0], keys[0], resultRequest, 'menuCategories//');
 }
-// //отработка кнопки МНЕ ПОВЕЗЕТ
-// async function getRandomNumber(min: number, max: number): Promise<number> {
-//     return Math.floor(Math.random() * (max - min + 1)) + min;
-// }
 
-// async function selectionRandomProduct() {
-//     let resultRequest: SelectResultDB[] = await respondsToMenuListProductNameId();
-//     let randomNumber = await getRandomNumber(1, resultRequest.length - 1);
-//     return resultRequest[randomNumber].product_id
-// }
-// //отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория*
-// async function creatingMenuListByCategoryArrButtons(categoryNameLeft: string): Promise<object[]> {
-//     let resultRequest: SelectResultDB[] = await respondsToMenuListByCategory(categoryNameLeft);
-//     let buttonsArray: object[] = [[{ text: `Раскрыть категорию *${categoryNameLeft}*`, callback_data: `subcategories//${categoryNameLeft}` }]];
-//     for (let i = 0; i < resultRequest.length; i++) {
-//         buttonsArray.push([{ text: resultRequest[i].product_name, callback_data: resultRequest[i].product_id }])
-//     }
-//     return buttonsArray
-// }
+//отработка кнопки МНЕ ПОВЕЗЕТ
+async function selectionRandomProduct(): Promise<Product> {
+    let resultRequest: Product[] = await respondsToMenuListProductNameId();
+    let randomNumber: number = await getRandomNumber(1, resultRequest.length - 1);
+    return resultRequest[randomNumber]
+}
 
-// export async function creatingMenuListByCategoryButtons(categoryNameLeft: string): Promise<Button> {
-//     let buttonsArray: object[] = await creatingMenuListByCategoryArrButtons(categoryNameLeft);
-//     return { reply_markup: { inline_keyboard: buttonsArray } }
-// }
-// //отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория* - 'подкатегории'
-// async function creatingMenuListCategoryNameArrButtons(categoryNameLeft: string): Promise<object[]> {
-//     let resultRequest: SelectResultDB[] = await respondsToMenuListCategoryName(categoryNameLeft);
-//     let buttonsArray: object[] = [];
-//     for (let i = 0; i < resultRequest.length; i++) {
-//         buttonsArray.push([{ text: resultRequest[i].category_name, callback_data: `menuCategoriesTwo//${resultRequest[i].category_name}` }])
-//     }
-//     return buttonsArray
-// }
+//отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория*
+export async function creatingMenuListByCategoryButtons(categoryNameLeft: string): Promise<ReplyMarkup> {
+    let resultRequest: ProductsCatalog[] = await respondsToMenuListByCategory(categoryNameLeft);
+    const dataFirstButton: ProductsCatalog = {
+        product_name: `Раскрыть категорию *${categoryNameLeft}*`, product_id: `subcategories//${categoryNameLeft}`,
+        category_name_left: '',
+        category_name: ''
+    };
+    let keys = Object.keys(resultRequest[0]);
+    resultRequest.unshift(dataFirstButton);
+    return await creatingInlineKeyboardButton(keys[1], keys[0], resultRequest);
+}
 
-// export async function creatingMenuListCategoryNameButtons(categoryNameLeft: string): Promise<Button> {
-//     let buttonsArray: object[] = await creatingMenuListCategoryNameArrButtons(categoryNameLeft);
-//     return { reply_markup: { inline_keyboard: buttonsArray } }
-// }
-// //отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория* - 'подкатегории' - развернутая подкатегория
-// async function creatingMenuListProductNameIdSubcategoryArrButtons(categoryName: string): Promise<object[]> {
-//     let resultRequest: SelectResultDB[] = await respondsToMenuListProductNameIdSubcategory(categoryName);
-//     let buttonsArray: object[] = [];
-//     for (let i = 0; i < resultRequest.length; i++) {
-//         buttonsArray.push([{ text: resultRequest[i].product_name, callback_data: resultRequest[i].product_id }])
-//     }
-//     return buttonsArray
-// }
+//отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория* - 'подкатегории'
+export async function creatingMenuListCategoryNameButtons(categoryNameLeft: string): Promise<ReplyMarkup> {
+    let resultRequest: CategoryName[] = await respondsToMenuListCategoryName(categoryNameLeft);
+    let keys = Object.keys(resultRequest[0]);
+    return await creatingInlineKeyboardButton(keys[0], keys[0], resultRequest, 'menuCategoriesTwo//');
+}
 
-// export async function creatingMenuListProductNameIdSubcategoryButtons(categoryNameLeft: string): Promise<Button> {
-//     let buttonsArray: object[] = await creatingMenuListProductNameIdSubcategoryArrButtons(categoryNameLeft);
-//     return { reply_markup: { inline_keyboard: buttonsArray } }
-// }
+//отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория* - 'подкатегории' - развернутая подкатегория
+export async function creatingMenuListProductNameIdSubcategoryButtons(categoryName: string): Promise<ReplyMarkup> {
+    let resultRequest: Product[] = await respondsToMenuListProductNameIdSubcategory(categoryName);
+    let keys = Object.keys(resultRequest[0]);
+    return await creatingInlineKeyboardButton(keys[1], keys[0], resultRequest);
+}
