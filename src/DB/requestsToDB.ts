@@ -11,7 +11,16 @@ export class SelectResultDB {
     image_path!: string;
 }
 
-export async function respondsToMenuListProductNameId(): Promise<SelectResultDB[]> {
+export interface Product {
+    product_name: string;
+    product_id: string;
+};
+
+export interface CategoriesLeft {
+    category_name_left: string;
+};
+
+export async function respondsToMenuListProductNameId(): Promise<Product[]> {
     let productName: string = `SELECT product_name, product_id
                                FROM products
                                WHERE access='yes'
@@ -20,7 +29,7 @@ export async function respondsToMenuListProductNameId(): Promise<SelectResultDB[
     return executeQuery(productName)
 };
 
-export async function respondsToMenuListCategoryNameLeft(): Promise<SelectResultDB[]> {
+export async function respondsToMenuListCategoryNameLeft(): Promise<CategoriesLeft[]> {
     let categoryNameLeft: string = `SELECT DISTINCT categories.category_name_left
                                     FROM categories
                                     INNER JOIN products ON categories.category_name=products.category_name
