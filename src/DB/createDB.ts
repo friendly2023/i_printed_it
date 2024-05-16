@@ -1,4 +1,4 @@
-import { executeQuery } from './query'
+import { QueryExecutor } from './query'
 
 let creatTableUsers: string = `CREATE TABLE users (
     user_id varchar(20) PRIMARY KEY,
@@ -50,12 +50,12 @@ let creatTableShoppingCart: string = `CREATE TABLE shoppingCart (
     sum varchar(6) NOT NULL
 );`;
 
-//функции создания таблиц
-// executeQuery(creatTableUsers);
-// executeQuery(creatTableProducts);
-// executeQuery(creatTableProductsDescription);
-// executeQuery(creatTableProductsPhoto);
-// executeQuery(creatTableCategories);
-// executeQuery(creatTableCategoriesId);
-// executeQuery(creatTablePurchaseHistory);
-// executeQuery(creatTableShoppingCart);
+
+// const queryExecutor = new QueryExecutor(creatTableUsers);
+// queryExecutor.executeQuery()
+//     .then((result) => {
+//         console.log('Таблица создана');
+//     })
+//     .catch((err) => {
+//         console.error('Error:', err.message);
+//     });

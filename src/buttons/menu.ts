@@ -10,9 +10,9 @@ import {
     respondsToMenuListProductNameIdSubcategory
 } from '../DB/requestsToDB';
 
-class Button {
-    reply_markup!: object;
-}
+// class Button {
+//     reply_markup!: object;
+// }
 
 interface InlineKeyboardButton {
     text: string;
