@@ -104,11 +104,11 @@ export class RequestsToDB {
     }
 }
 
-const productNameIdInstance = new RequestsToDB();
-productNameIdInstance.respondsToMenuListProductNameId()
-    .then((products: Product[]) => {
-        console.log(products);
-    })
-    .catch((error) => {
-        console.error('Ошибка:', error);
-    });
+// const productNameIdInstance = new RequestsToDB();
+// productNameIdInstance.respondsToMenuListProductNameId()
+//     .then((products: Product[]) => {
+//         console.log(products);
+//     })
+//     .catch((error) => {
+//         console.error('Ошибка:', error);
+//     });
