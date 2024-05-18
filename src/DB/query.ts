@@ -3,7 +3,7 @@ import { config } from '../serviceKey/dbKey';
 
 // (async () => console.log(await executeQuery('SELECT * FROM users')))()
 
-export class QueryExecutor {
+export class DatabaseConnection {
     private client: pg.Client;
     private query: string;
 
