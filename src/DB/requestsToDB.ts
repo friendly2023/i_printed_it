@@ -32,7 +32,7 @@ export class ProductsDescription {
 
 export class RequestsToDB {
 
-    async sendingRequest(query: string) {
+    private async sendingRequest(query: string) {
         let databaseConnection = new DatabaseConnection(query);
         let result = await databaseConnection.executeQuery();
         return result.rows;

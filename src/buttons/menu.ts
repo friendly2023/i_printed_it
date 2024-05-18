@@ -1,5 +1,6 @@
 import {
-    // Product,
+    RequestsToDB,
+    Product,
     // CategoriesLeft,
     // ProductsCatalog,
     // CategoryName,
@@ -28,7 +29,7 @@ class ReplyMarkup {
 export class MenuButtons {
 
     //создание кнопки
-    async creatingInlineKeyboardButton(keys1: string, keys2: string, data: any, callbackToken?: string): Promise<ReplyMarkup> {
+    private async creatingInlineKeyboardButton(keys1: string, keys2: string, data: any, callbackToken?: string): Promise<ReplyMarkup> {
         return new Promise((resolve) => {
             const inlineKeyboard: InlineKeyboardButton[][] = data.map((item: any) => [
                 {
@@ -47,6 +48,11 @@ export class MenuButtons {
         });
     }
 
+    //рандомайзер
+    async getRandomNumber(min: number, max: number): Promise<number> {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
     //отработка кнопки меню
     async creatingMenuButtons(): Promise<ReplyMarkup> {
         return {
@@ -57,11 +63,16 @@ export class MenuButtons {
             }
         };
     }
-}
 
-// async function getRandomNumber(min: number, max: number): Promise<number> {
-//     return Math.floor(Math.random() * (max - min + 1)) + min;
-// }
+    // отработка кнопки СПИСОК
+    async creatingMenuListProductNameIdButtons(): Promise<ReplyMarkup> {
+        let requestsToDB = new RequestsToDB();
+        let result: Product[] = await requestsToDB.respondsToMenuListProductNameId();
+        let keys = Object.keys(result[0]);
+        return this.creatingInlineKeyboardButton(keys[0], keys[1], result);
+    }
+
+}
 
 // // отработка кнопки СПИСОК
 // export async function creatingMenuListProductNameIdButtons(): Promise<ReplyMarkup> {
