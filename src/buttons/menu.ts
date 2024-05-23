@@ -82,7 +82,7 @@ export class MenuButtons {
     async creatingMenuListCategoryNameLeftButtons(): Promise<ReplyMarkup> {
         let resultRequest: CategoriesLeft[] = await this.rebuildingArrCategories();
         const keys = Object.keys(resultRequest[0]);
-        return this.creatingInlineKeyboardButton(keys[0], keys[0], resultRequest, 'menuCategories//');
+        return this.creatingInlineKeyboardButton(keys[0], keys[0], resultRequest, 'menuCategoriesOpen//');
     }
 
     //отработка кнопки МНЕ ПОВЕЗЕТ
