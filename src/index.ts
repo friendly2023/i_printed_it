@@ -40,12 +40,14 @@ class Message {
             const text: string | undefined = msg.text;
             const chatId: number = msg.chat.id;
 
-            if (text === '/start') {
-                return await this.bot.sendMessage(chatId, `Добро пожаловать в наш интернет-магазин! Для перехода в меню, отправьте команду /menu`);
-            }
-            if (text === '/menu') {
-                let buttons = new MenuButtons();
-                return await this.bot.sendMessage(chatId, `Выберете вариант отображения:`, await buttons.creatingMenuButtons());
+            switch (text) {
+                case '/start':
+                    this.handleStart(chatId);
+                    break;
+
+                case '/menu':
+                    this.handleMenu(chatId);
+                    break;
             }
         });
 
@@ -84,7 +86,15 @@ class Message {
             }
 
         });
-    }
+    };
+
+    private async handleStart(chatId: number) {
+        return await this.bot.sendMessage(chatId, `Добро пожаловать в наш интернет-магазин! Для перехода в меню, отправьте команду /menu`);
+    };
+
+    private async handleMenu(chatId: number) {
+        return await this.bot.sendMessage(chatId, `Выберете вариант отображения:`, await buttons.creatingMenuButtons());
+    };
 
     private async handleMenuList(chatId: number) {
         return await bot.sendMessage(chatId, `Общий список:`, await buttons.creatingMenuListProductNameIdButtons());
@@ -92,33 +102,33 @@ class Message {
 
     private async handleMenuCategories(chatId: number) {
         return await bot.sendMessage(chatId, `Выберете категорию:`, await buttons.creatingMenuListCategoryNameLeftButtons());
-    }
+    };
 
     private async handleLuckyMe(chatId: number) {
         let randomProduct: string = await buttons.selectionRandomProduct();
         let figurineСard = new FigurineCard(randomProduct);
         return await bot.sendMediaGroup(chatId, await figurineСard.writingMessageToPhoto());
-    }
+    };
 
     private async handleMenuCategoriesOpen(chatId: number, text: string[]) {
         return await bot.sendMessage(chatId, `Выберете из вариантов:`,
             await buttons.creatingMenuListByCategoryButtons(text[1]));
-    }
+    };
 
     private async handleSubcategories(chatId: number, text: string[]) {
         return await bot.sendMessage(chatId, `Выбрана категория *${text[1]}*, выберете подкатегорию`,
             await buttons.creatingMenuListCategoryNameButtons(text[1]));
-    }
+    };
 
     private async handleMenuCategoriesTwo(chatId: number, text: string[]) {
         return await bot.sendMessage(chatId, `Открыта подкатегория *${text[1]}*`,
             await buttons.creatingMenuListProductNameIdSubcategoryButtons(text[1]));
-    }
+    };
 
     private async handleIdentifier4(chatId: number, text: string[]) {
         let figurineСard = new FigurineCard(text[0]);
         return await bot.sendMediaGroup(chatId, await figurineСard.writingMessageToPhoto());
-    }
+    };
 }
 
 let start = new Message(bot);
