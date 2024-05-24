@@ -1,4 +1,4 @@
-import { QueryExecutor } from './query'
+import { DatabaseConnection } from './query'
 
 let creatTableUsers: string = `CREATE TABLE users (
     user_id varchar(20) PRIMARY KEY,
@@ -51,7 +51,7 @@ let creatTableShoppingCart: string = `CREATE TABLE shoppingCart (
 );`;
 
 
-// const queryExecutor = new QueryExecutor(creatTableUsers);
+// const queryExecutor = new DatabaseConnection(creatTableUsers);
 // queryExecutor.executeQuery()
 //     .then((result) => {
 //         console.log('Таблица создана');

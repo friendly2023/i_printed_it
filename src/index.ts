@@ -9,8 +9,6 @@ class MenuItems {
     description!: string;
 }
 
-let buttons = new MenuButtons();
-
 class Message {
     private bot: any;
 
@@ -93,34 +91,41 @@ class Message {
     };
 
     private async handleMenu(chatId: number) {
+        let buttons = new MenuButtons();
         return await this.bot.sendMessage(chatId, `Выберете вариант отображения:`, await buttons.creatingMenuButtons());
     };
 
     private async handleMenuList(chatId: number) {
+        let buttons = new MenuButtons();
         return await bot.sendMessage(chatId, `Общий список:`, await buttons.creatingMenuListProductNameIdButtons());
     };
 
     private async handleMenuCategories(chatId: number) {
+        let buttons = new MenuButtons();
         return await bot.sendMessage(chatId, `Выберете категорию:`, await buttons.creatingMenuListCategoryNameLeftButtons());
     };
 
     private async handleLuckyMe(chatId: number) {
+        let buttons = new MenuButtons();
         let randomProduct: string = await buttons.selectionRandomProduct();
         let figurineСard = new FigurineCard(randomProduct);
         return await bot.sendMediaGroup(chatId, await figurineСard.writingMessageToPhoto());
     };
 
     private async handleMenuCategoriesOpen(chatId: number, text: string[]) {
+        let buttons = new MenuButtons();
         return await bot.sendMessage(chatId, `Выберете из вариантов:`,
             await buttons.creatingMenuListByCategoryButtons(text[1]));
     };
 
     private async handleSubcategories(chatId: number, text: string[]) {
+        let buttons = new MenuButtons();
         return await bot.sendMessage(chatId, `Выбрана категория *${text[1]}*, выберете подкатегорию`,
             await buttons.creatingMenuListCategoryNameButtons(text[1]));
     };
 
     private async handleMenuCategoriesTwo(chatId: number, text: string[]) {
+        let buttons = new MenuButtons();
         return await bot.sendMessage(chatId, `Открыта подкатегория *${text[1]}*`,
             await buttons.creatingMenuListProductNameIdSubcategoryButtons(text[1]));
     };

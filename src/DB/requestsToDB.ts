@@ -32,19 +32,14 @@ export class ProductsDescription {
 
 export class RequestsToDB {
 
-    private async sendingRequest(query: string) {
-        let databaseConnection = new DatabaseConnection(query);
-        let result = await databaseConnection.executeQuery();
-        return result.rows;
-    }
-
     async respondsToMenuListProductNameId(): Promise<Product[]> {
         const query: string = `SELECT product_name, product_id
                                 FROM products
                                 WHERE access = 'yes'
                                 ORDER BY product_name;`;
 
-        return this.sendingRequest(query);
+        let databaseConnection = new DatabaseConnection(query);
+        return (await databaseConnection.executeQuery()).rows;
     }
 
     async respondsToMenuListCategoryNameLeft(): Promise<CategoriesLeft[]> {
@@ -54,7 +49,8 @@ export class RequestsToDB {
                             INNER JOIN products ON categorieId.product_id=products.product_id
                             WHERE products.access='yes'
                             ORDER BY categories.category_name_left;`;
-        return this.sendingRequest(query);
+        let databaseConnection = new DatabaseConnection(query);
+        return (await databaseConnection.executeQuery()).rows;
     }
 
     async respondsToMenuListByCategory(categoryNameLeft: string): Promise<ProductsCatalog[]> {
@@ -64,7 +60,8 @@ export class RequestsToDB {
                             INNER JOIN products ON categorieId.product_id=products.product_id
                             WHERE products.access='yes' AND categories.category_name_left='${categoryNameLeft}'
                             ORDER BY products.product_name;`;
-        return this.sendingRequest(query);
+        let databaseConnection = new DatabaseConnection(query);
+        return (await databaseConnection.executeQuery()).rows;
     }
 
     async respondsToMenuListCategoryName(categoryNameLeft: string): Promise<CategoryName[]> {
@@ -74,7 +71,8 @@ export class RequestsToDB {
                             INNER JOIN products ON categorieId.product_id=products.product_id
                             WHERE products.access='yes' AND categories.category_name_left='${categoryNameLeft}'
                             ORDER BY categories.category_name;`;
-        return this.sendingRequest(query);
+        let databaseConnection = new DatabaseConnection(query);
+        return (await databaseConnection.executeQuery()).rows;
     }
 
     async respondsToMenuListProductNameIdSubcategory(categoryName: string): Promise<Product[]> {
@@ -83,7 +81,8 @@ export class RequestsToDB {
                             INNER JOIN products ON categorieId.product_id=products.product_id
                             WHERE categorieId.category_name='${categoryName}' AND products.access='yes'
                             ORDER BY product_name;`;
-        return this.sendingRequest(query);
+        let databaseConnection = new DatabaseConnection(query);
+        return (await databaseConnection.executeQuery()).rows;
     }
 
     async respondsImagePath(productId: string): Promise<ProductsPhoto[]> {
@@ -92,7 +91,8 @@ export class RequestsToDB {
                             INNER JOIN products ON productsPhoto.product_id=products.product_id
                             WHERE products.access='yes' and productsPhoto.product_id='${productId}'
                             ORDER BY productsPhoto.order_number;`;
-        return this.sendingRequest(query);
+        let databaseConnection = new DatabaseConnection(query);
+        return (await databaseConnection.executeQuery()).rows;
     }
 
     async respondsProductCard(productId: string): Promise<ProductsDescription[]> {
@@ -100,15 +100,7 @@ export class RequestsToDB {
                             FROM products
                             INNER JOIN productsDescription ON products.product_id=productsDescription.product_id
                             WHERE products.access='yes' and products.product_id='${productId}';`;
-        return this.sendingRequest(query);
+        let databaseConnection = new DatabaseConnection(query);
+        return (await databaseConnection.executeQuery()).rows;
     }
 }
-
-// const productNameIdInstance = new RequestsToDB();
-// productNameIdInstance.respondsToMenuListProductNameId()
-//     .then((products: Product[]) => {
-//         console.log(products);
-//     })
-//     .catch((error) => {
-//         console.error('Ошибка:', error);
-//     });
