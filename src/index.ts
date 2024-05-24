@@ -1,79 +1,139 @@
 import { token } from './serviceKey/telegramKey';
 import TelegramApi from 'node-telegram-bot-api';
 const bot: any = new TelegramApi(token, { polling: true });
-import {
-    creatingMenuButtons,
-    creatingMenuListProductNameIdButtons,
-    creatingMenuListCategoryNameLeftButtons,
-    creatingMenuListByCategoryButtons,
-    creatingMenuListCategoryNameButtons,
-    creatingMenuListProductNameIdSubcategoryButtons,
-    selectionRandomProduct
-} from './buttons/menu';
+import { MenuButtons } from './buttons/menu';
+import { FigurineCard } from './productCard/figurineСard';
 
-import { creatingFigurineCard } from './productCard/figurineСard';
-
-bot.setMyCommands([
-    {
-        command: '/start',
-        description: 'Начальное приветствие'
-    },
-    {
-        command: '/menu',
-        description: 'Меню'
-    }
-])
-
-outputMessage()
-function outputMessage() {
-    bot.on('message', async (msg: { text: string; chat: { id: number; }; from: { first_name: string; }; }) => {
-        const text: string = msg.text;
-        const chatId: number = msg.chat.id;
-
-        if (text === '/start') {
-            return await bot.sendMessage(chatId, `Добро пожаловать в наш интернет-магазин! Для перехода в меню, отправьте команду /menu`);
-        }
-        if (text === '/menu') {
-            return await bot.sendMessage(chatId, `Выберете вариант отображения:`, await creatingMenuButtons());
-        }
-    })
-
-    bot.on('callback_query', async (msg: { message: { chat: { id: number; }; }; data: string; }) => {
-        const chatId: number = msg.message.chat.id;
-        const text: string[] = msg.data.split(/\/{2}/g);;
-
-        if (text[0] == 'menuList' && text.length == 1) {
-            return await bot.sendMessage(chatId, `Общий список:`,
-                await creatingMenuListProductNameIdButtons());
-        }
-        if (text[0] == 'menuCategories' && text.length == 1) {
-            return await bot.sendMessage(chatId, `Выберете категорию:`,
-                await creatingMenuListCategoryNameLeftButtons());
-        }
-        if (text[0] == 'luckyMe' && text.length == 1) {
-            let randomProduct: string = await selectionRandomProduct();
-            let figurineСard = await creatingFigurineCard(randomProduct);
-            return await bot.sendMediaGroup(chatId, figurineСard);
-        }
-        if (text[0] == 'subcategories' && text.length == 2) {
-            let categoryNameLeft: string = text[1];
-            return await bot.sendMessage(chatId, `Выбрана категория *${categoryNameLeft}*, выберете подкатегорию`,
-                await creatingMenuListCategoryNameButtons(categoryNameLeft));
-        }
-        if (text[0] == 'menuCategories' && text.length == 2) {
-            let categoryNameLeft: string = text[1];
-            return await bot.sendMessage(chatId, `Выберете из вариантов:`,
-                await creatingMenuListByCategoryButtons(categoryNameLeft));
-        }
-        if (text[0] == 'menuCategoriesTwo' && text.length == 2) {
-            let categoryName: string = text[1];
-            return await bot.sendMessage(chatId, `Открыта подкатегория *${categoryName}*`,
-                await creatingMenuListProductNameIdSubcategoryButtons(categoryName));
-        }
-        if (text[0].match(/\d{4}/g)) {
-            let id: string = text[0];
-            let figurineСard = await creatingFigurineCard(id);
-            return await bot.sendMediaGroup(chatId, figurineСard);
-        }
-    })
+class MenuItems {
+    command!: string;
+    description!: string;
 }
+
+class Message {
+    private bot: any;
+
+    constructor(bot: any) {
+        this.bot = bot;
+        this.outputMessage();
+    }
+
+    private async Menu() {
+        let menu: MenuItems = bot.setMyCommands([
+            {
+                command: '/start',
+                description: 'Начальное приветствие'
+            },
+            {
+                command: '/menu',
+                description: 'Меню'
+            }
+        ])
+        return menu
+    }
+
+    async outputMessage() {
+        this.Menu();
+
+        this.bot.on('message', async (msg: TelegramApi.Message) => {
+            const text: string | undefined = msg.text;
+            const chatId: number = msg.chat.id;
+
+            switch (text) {
+                case '/start':
+                    this.handleStart(chatId);
+                    break;
+
+                case '/menu':
+                    this.handleMenu(chatId);
+                    break;
+            }
+        });
+
+        this.bot.on('callback_query', async (msg: { message: { chat: { id: number; }; }; data: string; }) => {
+            const chatId: number = msg.message.chat.id;
+            const text: string[] = msg.data.split(/\/{2}/g);
+
+            switch (text[0]) {
+                case 'menuList':
+                    this.handleMenuList(chatId);
+                    break;
+
+                case 'menuCategories':
+                    this.handleMenuCategories(chatId);
+                    break;
+
+                case 'luckyMe':
+                    this.handleLuckyMe(chatId);
+                    break;
+
+                case 'menuCategoriesOpen':
+                    this.handleMenuCategoriesOpen(chatId, text);
+                    break;
+
+                case 'subcategories':
+                    this.handleSubcategories(chatId, text);
+                    break;
+
+                case 'menuCategoriesTwo':
+                    this.handleMenuCategoriesTwo(chatId, text);
+                    break;
+            }
+
+            if (text[0].match(/\d{4}/g)) {
+                this.handleIdentifier4(chatId, text);
+            }
+
+        });
+    };
+
+    private async handleStart(chatId: number) {
+        return await this.bot.sendMessage(chatId, `Добро пожаловать в наш интернет-магазин! Для перехода в меню, отправьте команду /menu`);
+    };
+
+    private async handleMenu(chatId: number) {
+        let buttons = new MenuButtons();
+        return await this.bot.sendMessage(chatId, `Выберете вариант отображения:`, await buttons.creatingMenuButtons());
+    };
+
+    private async handleMenuList(chatId: number) {
+        let buttons = new MenuButtons();
+        return await bot.sendMessage(chatId, `Общий список:`, await buttons.creatingMenuListProductNameIdButtons());
+    };
+
+    private async handleMenuCategories(chatId: number) {
+        let buttons = new MenuButtons();
+        return await bot.sendMessage(chatId, `Выберете категорию:`, await buttons.creatingMenuListCategoryNameLeftButtons());
+    };
+
+    private async handleLuckyMe(chatId: number) {
+        let buttons = new MenuButtons();
+        let randomProduct: string = await buttons.selectionRandomProduct();
+        let figurineСard = new FigurineCard(randomProduct);
+        return await bot.sendMediaGroup(chatId, await figurineСard.writingMessageToPhoto());
+    };
+
+    private async handleMenuCategoriesOpen(chatId: number, text: string[]) {
+        let buttons = new MenuButtons();
+        return await bot.sendMessage(chatId, `Выберете из вариантов:`,
+            await buttons.creatingMenuListByCategoryButtons(text[1]));
+    };
+
+    private async handleSubcategories(chatId: number, text: string[]) {
+        let buttons = new MenuButtons();
+        return await bot.sendMessage(chatId, `Выбрана категория *${text[1]}*, выберете подкатегорию`,
+            await buttons.creatingMenuListCategoryNameButtons(text[1]));
+    };
+
+    private async handleMenuCategoriesTwo(chatId: number, text: string[]) {
+        let buttons = new MenuButtons();
+        return await bot.sendMessage(chatId, `Открыта подкатегория *${text[1]}*`,
+            await buttons.creatingMenuListProductNameIdSubcategoryButtons(text[1]));
+    };
+
+    private async handleIdentifier4(chatId: number, text: string[]) {
+        let figurineСard = new FigurineCard(text[0]);
+        return await bot.sendMediaGroup(chatId, await figurineСard.writingMessageToPhoto());
+    };
+}
+
+let start = new Message(bot);
