@@ -38,8 +38,8 @@ export class RequestsToDB {
                                 WHERE access = 'yes'
                                 ORDER BY product_name;`;
 
-        let databaseConnection = DatabaseConnection.getInstance(query);
-        return (await databaseConnection.executeQuery()).rows;
+        let databaseConnection = await DatabaseConnection.getInstance();
+        return (await databaseConnection.executeQuery(query)).rows;
     }
 
     async respondsToMenuListCategoryNameLeft(): Promise<CategoriesLeft[]> {
@@ -50,8 +50,8 @@ export class RequestsToDB {
                             WHERE products.access='yes'
                             ORDER BY categories.category_name_left;`;
 
-        let databaseConnection = DatabaseConnection.getInstance(query);
-        return (await databaseConnection.executeQuery()).rows;
+        let databaseConnection = await DatabaseConnection.getInstance();
+        return (await databaseConnection.executeQuery(query)).rows;
     }
 
     async respondsToMenuListByCategory(categoryNameLeft: string): Promise<ProductsCatalog[]> {
@@ -61,8 +61,8 @@ export class RequestsToDB {
                             INNER JOIN products ON categorieId.product_id=products.product_id
                             WHERE products.access='yes' AND categories.category_name_left='${categoryNameLeft}'
                             ORDER BY products.product_name;`;
-        let databaseConnection = DatabaseConnection.getInstance(query);
-        return (await databaseConnection.executeQuery()).rows;
+        let databaseConnection = await DatabaseConnection.getInstance();
+        return (await databaseConnection.executeQuery(query)).rows;
     }
 
     async respondsToMenuListCategoryName(categoryNameLeft: string): Promise<CategoryName[]> {
@@ -72,8 +72,8 @@ export class RequestsToDB {
                             INNER JOIN products ON categorieId.product_id=products.product_id
                             WHERE products.access='yes' AND categories.category_name_left='${categoryNameLeft}'
                             ORDER BY categories.category_name;`;
-        let databaseConnection = DatabaseConnection.getInstance(query);
-        return (await databaseConnection.executeQuery()).rows;
+        let databaseConnection = await DatabaseConnection.getInstance();
+        return (await databaseConnection.executeQuery(query)).rows;
     }
 
     async respondsToMenuListProductNameIdSubcategory(categoryName: string): Promise<Product[]> {
@@ -82,8 +82,8 @@ export class RequestsToDB {
                             INNER JOIN products ON categorieId.product_id=products.product_id
                             WHERE categorieId.category_name='${categoryName}' AND products.access='yes'
                             ORDER BY product_name;`;
-        let databaseConnection = DatabaseConnection.getInstance(query);
-        return (await databaseConnection.executeQuery()).rows;
+        let databaseConnection = await DatabaseConnection.getInstance();
+        return (await databaseConnection.executeQuery(query)).rows;
     }
 
     async respondsImagePath(productId: string): Promise<ProductsPhoto[]> {
@@ -92,8 +92,8 @@ export class RequestsToDB {
                             INNER JOIN products ON productsPhoto.product_id=products.product_id
                             WHERE products.access='yes' and productsPhoto.product_id='${productId}'
                             ORDER BY productsPhoto.order_number;`;
-        let databaseConnection = DatabaseConnection.getInstance(query);
-        return (await databaseConnection.executeQuery()).rows;
+        let databaseConnection = await DatabaseConnection.getInstance();
+        return (await databaseConnection.executeQuery(query)).rows;
     }
 
     async respondsProductCard(productId: string): Promise<ProductsDescription[]> {
@@ -101,7 +101,7 @@ export class RequestsToDB {
                             FROM products
                             INNER JOIN productsDescription ON products.product_id=productsDescription.product_id
                             WHERE products.access='yes' and products.product_id='${productId}';`;
-        let databaseConnection = DatabaseConnection.getInstance(query);
-        return (await databaseConnection.executeQuery()).rows;
+        let databaseConnection = await DatabaseConnection.getInstance();
+        return (await databaseConnection.executeQuery(query)).rows;
     }
 }
