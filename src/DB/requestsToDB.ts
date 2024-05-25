@@ -38,7 +38,7 @@ export class RequestsToDB {
                                 WHERE access = 'yes'
                                 ORDER BY product_name;`;
 
-        let databaseConnection = new DatabaseConnection(query);
+        let databaseConnection = DatabaseConnection.getInstance(query);
         return (await databaseConnection.executeQuery()).rows;
     }
 
@@ -49,7 +49,8 @@ export class RequestsToDB {
                             INNER JOIN products ON categorieId.product_id=products.product_id
                             WHERE products.access='yes'
                             ORDER BY categories.category_name_left;`;
-        let databaseConnection = new DatabaseConnection(query);
+
+        let databaseConnection = DatabaseConnection.getInstance(query);
         return (await databaseConnection.executeQuery()).rows;
     }
 
@@ -60,7 +61,7 @@ export class RequestsToDB {
                             INNER JOIN products ON categorieId.product_id=products.product_id
                             WHERE products.access='yes' AND categories.category_name_left='${categoryNameLeft}'
                             ORDER BY products.product_name;`;
-        let databaseConnection = new DatabaseConnection(query);
+        let databaseConnection = DatabaseConnection.getInstance(query);
         return (await databaseConnection.executeQuery()).rows;
     }
 
@@ -71,7 +72,7 @@ export class RequestsToDB {
                             INNER JOIN products ON categorieId.product_id=products.product_id
                             WHERE products.access='yes' AND categories.category_name_left='${categoryNameLeft}'
                             ORDER BY categories.category_name;`;
-        let databaseConnection = new DatabaseConnection(query);
+        let databaseConnection = DatabaseConnection.getInstance(query);
         return (await databaseConnection.executeQuery()).rows;
     }
 
@@ -81,7 +82,7 @@ export class RequestsToDB {
                             INNER JOIN products ON categorieId.product_id=products.product_id
                             WHERE categorieId.category_name='${categoryName}' AND products.access='yes'
                             ORDER BY product_name;`;
-        let databaseConnection = new DatabaseConnection(query);
+        let databaseConnection = DatabaseConnection.getInstance(query);
         return (await databaseConnection.executeQuery()).rows;
     }
 
@@ -91,7 +92,7 @@ export class RequestsToDB {
                             INNER JOIN products ON productsPhoto.product_id=products.product_id
                             WHERE products.access='yes' and productsPhoto.product_id='${productId}'
                             ORDER BY productsPhoto.order_number;`;
-        let databaseConnection = new DatabaseConnection(query);
+        let databaseConnection = DatabaseConnection.getInstance(query);
         return (await databaseConnection.executeQuery()).rows;
     }
 
@@ -100,7 +101,7 @@ export class RequestsToDB {
                             FROM products
                             INNER JOIN productsDescription ON products.product_id=productsDescription.product_id
                             WHERE products.access='yes' and products.product_id='${productId}';`;
-        let databaseConnection = new DatabaseConnection(query);
+        let databaseConnection = DatabaseConnection.getInstance(query);
         return (await databaseConnection.executeQuery()).rows;
     }
 }
