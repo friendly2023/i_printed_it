@@ -12,11 +12,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node-telegram-bot-api": "^0.64.6"
+    "@testdeck/mocha": "^0.3.3",
+    "@types/chai": "^4.3.16",
+    "@types/node-telegram-bot-api": "^0.64.6",
+    "chai": "^5.1.1",
+    "mocha": "^10.4.0",
+    "nyc": "^15.1.0",
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
     "@types/pg": "^8.11.6",
-    "node-telegram-bot-api": "^0.65.1",
+    "node-telegram-bot-api": "^0.63.0",
     "pg": "^8.11.5"
   }
 }
