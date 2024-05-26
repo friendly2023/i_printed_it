@@ -3,7 +3,11 @@ import { config } from '../serviceKey/dbKey';
 
 const client = new pg.Client(config);
 
-export class DatabaseConnection {
+export interface DatabaseRepository {
+    executeQuery(query: string): Promise<pg.QueryResult>;
+}
+
+export class DatabaseConnection implements DatabaseRepository {
     private static instance: DatabaseConnection;
 
     private constructor() {

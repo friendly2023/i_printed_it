@@ -3,7 +3,8 @@ import {
     Product,
     CategoriesLeft,
     ProductsCatalog,
-    CategoryName
+    CategoryName,
+    ProductRepository
 } from '../DB/requestsToDB';
 
 class InlineKeyboardButton {
@@ -17,7 +18,23 @@ class ReplyMarkup {
     };
 }
 
-export class MenuButtons {
+export interface MenuRepository {
+    creatingMenuButtons(): Promise<ReplyMarkup>;
+    creatingMenuListProductNameIdButtons(): Promise<ReplyMarkup>;
+    creatingMenuListCategoryNameLeftButtons(): Promise<ReplyMarkup>;
+    selectionRandomProduct(): Promise<string>;
+    creatingMenuListByCategoryButtons(categoryNameLeft: string): Promise<ReplyMarkup>;
+    creatingMenuListCategoryNameButtons(categoryNameLeft: string): Promise<ReplyMarkup>;
+    creatingMenuListProductNameIdSubcategoryButtons(categoryName: string): Promise<ReplyMarkup>;
+}
+
+export class MenuButtons implements MenuRepository {
+
+    private productRepository: ProductRepository;
+
+    constructor(productRepository: ProductRepository) {
+        this.productRepository = productRepository;
+    }
 
     //создание кнопки
     private async creatingInlineKeyboardButton(keys1: string, keys2: string, data: any, callbackToken?: string): Promise<ReplyMarkup> {
@@ -49,31 +66,29 @@ export class MenuButtons {
         return {
             reply_markup: {
                 inline_keyboard: [[{ text: 'Список', callback_data: `menuList` }],
-                                [{ text: 'По категориям', callback_data: `menuCategories` }],
-                                [{ text: 'Мне повезет!', callback_data: `luckyMe` }]]
+                [{ text: 'По категориям', callback_data: `menuCategories` }],
+                [{ text: 'Мне повезет!', callback_data: `luckyMe` }]]
             }
         };
     }
 
     // отработка кнопки СПИСОК
     async creatingMenuListProductNameIdButtons(): Promise<ReplyMarkup> {
-        let requestsToDB = new RequestsToDB();
-        let result: Product[] = await requestsToDB.respondsToMenuListProductNameId();
+        let result: Product[] = await this.productRepository.respondsToMenuListProductNameId();
         let keys = Object.keys(result[0]);
         return this.creatingInlineKeyboardButton(keys[0], keys[1], result);
     }
 
     //отработка кнопки ПО КАТЕГОРИЯМ
     private async rebuildingArrCategories(): Promise<CategoriesLeft[]> {
-        let requestsToDB = new RequestsToDB();
-        let result: CategoriesLeft[] = await requestsToDB.respondsToMenuListCategoryNameLeft();
+        let result: CategoriesLeft[] = await this.productRepository.respondsToMenuListCategoryNameLeft();
         const sortedData = result.sort((a, b) => {
             if (a.category_name_left === 'Другое') {
-                return 1; // Переместить объект 'Другое' в конец
+                return 1;
             } else if (b.category_name_left === 'Другое') {
-                return -1; // Переместить объект 'Другое' в конец
+                return -1;
             } else {
-                return 0; // Оставить остальные объекты на своих местах
+                return 0;
             }
         });
         return sortedData
@@ -87,16 +102,14 @@ export class MenuButtons {
 
     //отработка кнопки МНЕ ПОВЕЗЕТ
     async selectionRandomProduct(): Promise<string> {
-        let requestsToDB = new RequestsToDB();
-        let result: Product[] = await requestsToDB.respondsToMenuListProductNameId();
+        let result: Product[] = await this.productRepository.respondsToMenuListProductNameId();
         let randomNumber: number = await this.getRandomNumber(1, result.length - 1);
         return result[randomNumber].product_id;
     }
 
     //отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория*
     async creatingMenuListByCategoryButtons(categoryNameLeft: string): Promise<ReplyMarkup> {
-        let requestsToDB = new RequestsToDB();
-        let result: ProductsCatalog[] = await requestsToDB.respondsToMenuListByCategory(categoryNameLeft);
+        let result: ProductsCatalog[] = await this.productRepository.respondsToMenuListByCategory(categoryNameLeft);
         const dataFirstButton: ProductsCatalog = {
             product_name: `Раскрыть категорию *${categoryNameLeft}*`, product_id: `subcategories//${categoryNameLeft}`,
             category_name_left: '',
@@ -109,16 +122,14 @@ export class MenuButtons {
 
     //отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория* - 'подкатегории'
     async creatingMenuListCategoryNameButtons(categoryNameLeft: string): Promise<ReplyMarkup> {
-        let requestsToDB = new RequestsToDB();
-        let result: CategoryName[] = await requestsToDB.respondsToMenuListCategoryName(categoryNameLeft);
+        let result: CategoryName[] = await this.productRepository.respondsToMenuListCategoryName(categoryNameLeft);
         let keys = Object.keys(result[0]);
         return this.creatingInlineKeyboardButton(keys[0], keys[0], result, 'menuCategoriesTwo//');
     }
 
     //отработка кнопки ПО КАТЕГОРИЯМ - *выбранная категория* - 'подкатегории' - развернутая подкатегория
     async creatingMenuListProductNameIdSubcategoryButtons(categoryName: string): Promise<ReplyMarkup> {
-        let requestsToDB = new RequestsToDB();
-        let result: Product[] = await requestsToDB.respondsToMenuListProductNameIdSubcategory(categoryName);
+        let result: Product[] = await this.productRepository.respondsToMenuListProductNameIdSubcategory(categoryName);
         let keys = Object.keys(result[0]);
         return this.creatingInlineKeyboardButton(keys[1], keys[0], result);
     }

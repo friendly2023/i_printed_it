@@ -1,20 +1,33 @@
 import { token } from './serviceKey/telegramKey';
 import TelegramApi from 'node-telegram-bot-api';
 const bot: any = new TelegramApi(token, { polling: true });
-import { MenuButtons } from './buttons/menu';
-import { FigurineCard } from './productCard/figurineСard';
+import { MenuButtons, MenuRepository } from './buttons/menu';
+import { FigurineCard, FigurineCardRepository } from './productCard/figurineСard';
+import { DatabaseConnection, DatabaseRepository } from './DB/query';
+import { ProductRepository, RequestsToDB } from './DB/requestsToDB';
 
 class MenuItems {
     command!: string;
     description!: string;
 }
 
+
+
 class Message {
     private bot: any;
+    private menuRepository: MenuRepository;
+    private figurineCardRepository: FigurineCardRepository;
+    private productRepository: ProductRepository;
 
-    constructor(bot: any) {
+    constructor(bot: any,
+        menuRepository: MenuRepository,
+        figurineCardRepository: FigurineCardRepository,
+        productRepository: ProductRepository) {
         this.bot = bot;
         this.outputMessage();
+        this.menuRepository = menuRepository;
+        this.figurineCardRepository = figurineCardRepository;
+        this.productRepository = productRepository;
     }
 
     private async Menu() {
@@ -91,49 +104,52 @@ class Message {
     };
 
     private async handleMenu(chatId: number) {
-        let buttons = new MenuButtons();
-        return await this.bot.sendMessage(chatId, `Выберете вариант отображения:`, await buttons.creatingMenuButtons());
+        return await this.bot.sendMessage(chatId, `Выберете вариант отображения:`, await this.menuRepository.creatingMenuButtons());
     };
 
     private async handleMenuList(chatId: number) {
-        let buttons = new MenuButtons();
-        return await bot.sendMessage(chatId, `Общий список:`, await buttons.creatingMenuListProductNameIdButtons());
+        return await bot.sendMessage(chatId, `Общий список:`, await this.menuRepository.creatingMenuListProductNameIdButtons());
     };
 
     private async handleMenuCategories(chatId: number) {
-        let buttons = new MenuButtons();
-        return await bot.sendMessage(chatId, `Выберете категорию:`, await buttons.creatingMenuListCategoryNameLeftButtons());
+        return await bot.sendMessage(chatId, `Выберете категорию:`, await this.menuRepository.creatingMenuListCategoryNameLeftButtons());
     };
 
     private async handleLuckyMe(chatId: number) {
-        let buttons = new MenuButtons();
-        let randomProduct: string = await buttons.selectionRandomProduct();
-        let figurineСard = new FigurineCard(randomProduct);
+        let randomProduct: string = await this.menuRepository.selectionRandomProduct();
+        let figurineСard = new FigurineCard(randomProduct, this.productRepository);
         return await bot.sendMediaGroup(chatId, await figurineСard.writingMessageToPhoto());
     };
 
     private async handleMenuCategoriesOpen(chatId: number, text: string[]) {
-        let buttons = new MenuButtons();
         return await bot.sendMessage(chatId, `Выберете из вариантов:`,
-            await buttons.creatingMenuListByCategoryButtons(text[1]));
+            await this.menuRepository.creatingMenuListByCategoryButtons(text[1]));
     };
 
     private async handleSubcategories(chatId: number, text: string[]) {
-        let buttons = new MenuButtons();
         return await bot.sendMessage(chatId, `Выбрана категория *${text[1]}*, выберете подкатегорию`,
-            await buttons.creatingMenuListCategoryNameButtons(text[1]));
+            await this.menuRepository.creatingMenuListCategoryNameButtons(text[1]));
     };
 
     private async handleMenuCategoriesTwo(chatId: number, text: string[]) {
-        let buttons = new MenuButtons();
         return await bot.sendMessage(chatId, `Открыта подкатегория *${text[1]}*`,
-            await buttons.creatingMenuListProductNameIdSubcategoryButtons(text[1]));
+            await this.menuRepository.creatingMenuListProductNameIdSubcategoryButtons(text[1]));
     };
 
     private async handleIdentifier4(chatId: number, text: string[]) {
-        let figurineСard = new FigurineCard(text[0]);
+        let figurineСard = new FigurineCard(text[0], this.productRepository);
         return await bot.sendMediaGroup(chatId, await figurineСard.writingMessageToPhoto());
     };
 }
 
-let start = new Message(bot);
+async function createMessageInstance() {
+    const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
+    const productRepository: ProductRepository = new RequestsToDB(databaseRepository);
+    const menuRepository: MenuRepository = new MenuButtons(productRepository);
+    const figurineCardRepository: FigurineCardRepository = new FigurineCard('productId', productRepository);
+
+    const message = new Message(bot, menuRepository, figurineCardRepository, productRepository);
+    return message;
+}
+
+createMessageInstance();

@@ -2,6 +2,7 @@ import {
     RequestsToDB,
     ProductsPhoto,
     ProductsDescription,
+    ProductRepository,
 } from '../DB/requestsToDB';
 
 class ArrayPhotos {
@@ -10,19 +11,24 @@ class ArrayPhotos {
     media!: string;
 }
 
-export class FigurineCard {
-    constructor(public productId: string) {
+export interface FigurineCardRepository {
+    writingMessageToPhoto(): Promise<ArrayPhotos[]>;
+}
+
+export class FigurineCard implements FigurineCardRepository {
+    private productRepository: ProductRepository;
+
+    constructor(public productId: string, productRepository: ProductRepository) {
         this.productId = productId;
+        this.productRepository = productRepository;
     }
 
     private async resultRespondsImagePath(): Promise<ProductsPhoto[]> {
-        let requestsToDB = new RequestsToDB();
-        return await requestsToDB.respondsImagePath(this.productId);
+        return await this.productRepository.respondsImagePath(this.productId);
     }
 
     private async resultProductCard(): Promise<ProductsDescription[]> {
-        let requestsToDB = new RequestsToDB();
-        return await requestsToDB.respondsProductCard(this.productId);
+        return await this.productRepository.respondsProductCard(this.productId);
     }
 
     async writingMessageToPhoto(): Promise<ArrayPhotos[]> {

@@ -1,4 +1,4 @@
-import { DatabaseConnection } from './query'
+import { DatabaseConnection, DatabaseRepository } from './query'
 
 export class Product {
     product_name!: string;
@@ -30,9 +30,22 @@ export class ProductsDescription {
     price!: number;
 }
 
-let databaseConnection = DatabaseConnection.getInstance();
+export interface ProductRepository {
+    respondsToMenuListProductNameId(): Promise<Product[]>;
+    respondsToMenuListCategoryNameLeft(): Promise<CategoriesLeft[]>;
+    respondsToMenuListByCategory(categoryNameLeft: string): Promise<ProductsCatalog[]>;
+    respondsToMenuListCategoryName(categoryNameLeft: string): Promise<CategoryName[]>;
+    respondsToMenuListProductNameIdSubcategory(categoryName: string): Promise<Product[]>;
+    respondsImagePath(productId: string): Promise<ProductsPhoto[]>;
+    respondsProductCard(productId: string): Promise<ProductsDescription[]>;
+}
 
-export class RequestsToDB {
+export class RequestsToDB implements ProductRepository {
+    private databaseRepository: DatabaseRepository;
+
+    constructor(databaseRepository: DatabaseRepository) {
+        this.databaseRepository = databaseRepository;
+    }
 
     async respondsToMenuListProductNameId(): Promise<Product[]> {
         const query: string = `SELECT product_name, product_id
@@ -40,7 +53,7 @@ export class RequestsToDB {
                                 WHERE access = 'yes'
                                 ORDER BY product_name;`;
 
-        return (await (await databaseConnection).executeQuery(query)).rows;
+        return (await this.databaseRepository.executeQuery(query)).rows;
     }
 
     async respondsToMenuListCategoryNameLeft(): Promise<CategoriesLeft[]> {
@@ -51,7 +64,7 @@ export class RequestsToDB {
                             WHERE products.access='yes'
                             ORDER BY categories.category_name_left;`;
 
-        return (await (await databaseConnection).executeQuery(query)).rows;
+        return (await this.databaseRepository.executeQuery(query)).rows;
     }
 
     async respondsToMenuListByCategory(categoryNameLeft: string): Promise<ProductsCatalog[]> {
@@ -62,7 +75,7 @@ export class RequestsToDB {
                             WHERE products.access='yes' AND categories.category_name_left='${categoryNameLeft}'
                             ORDER BY products.product_name;`;
 
-        return (await (await databaseConnection).executeQuery(query)).rows;
+        return (await this.databaseRepository.executeQuery(query)).rows;
     }
 
     async respondsToMenuListCategoryName(categoryNameLeft: string): Promise<CategoryName[]> {
@@ -73,7 +86,7 @@ export class RequestsToDB {
                             WHERE products.access='yes' AND categories.category_name_left='${categoryNameLeft}'
                             ORDER BY categories.category_name;`;
 
-        return (await (await databaseConnection).executeQuery(query)).rows;
+        return (await this.databaseRepository.executeQuery(query)).rows;
     }
 
     async respondsToMenuListProductNameIdSubcategory(categoryName: string): Promise<Product[]> {
@@ -83,7 +96,7 @@ export class RequestsToDB {
                             WHERE categorieId.category_name='${categoryName}' AND products.access='yes'
                             ORDER BY product_name;`;
 
-        return (await (await databaseConnection).executeQuery(query)).rows;
+        return (await this.databaseRepository.executeQuery(query)).rows;
     }
 
     async respondsImagePath(productId: string): Promise<ProductsPhoto[]> {
@@ -93,7 +106,7 @@ export class RequestsToDB {
                             WHERE products.access='yes' and productsPhoto.product_id='${productId}'
                             ORDER BY productsPhoto.order_number;`;
 
-        return (await (await databaseConnection).executeQuery(query)).rows;
+        return (await this.databaseRepository.executeQuery(query)).rows;
     }
 
     async respondsProductCard(productId: string): Promise<ProductsDescription[]> {
@@ -102,6 +115,6 @@ export class RequestsToDB {
                             INNER JOIN productsDescription ON products.product_id=productsDescription.product_id
                             WHERE products.access='yes' and products.product_id='${productId}';`;
 
-        return (await (await databaseConnection).executeQuery(query)).rows;
+        return (await this.databaseRepository.executeQuery(query)).rows;
     }
 }
