@@ -1,5 +1,5 @@
-import { Product, ProductRepository, RequestsToDB } from '../../DB/requestsToDB';
-import { DatabaseConnection, DatabaseRepository } from '../../DB/query';
+import { Product, RequestsToDB } from '../../DB/requestsToDB';
+import { DatabaseRepository } from '../../DB/query';
 
 class ProductFull {
   product_id!: string;
@@ -53,7 +53,7 @@ describe('RequestsToDB', () => {
     requestsToDBInstance = new RequestsToDB(fakeDatabaseRepository);
   });
 
-  it('respondsToMenuListProductNameId should return the correct data', async () => {
+  it('respondsToMenuListProductNameId() возвращает необходмые значения', async () => {
     const expectedProducts: Product[] = [
       { product_id: '1', product_name: 'Product A'},
       { product_id: '2', product_name: 'Product B'},
@@ -61,7 +61,6 @@ describe('RequestsToDB', () => {
     ];
 
     const result = await requestsToDBInstance.respondsToMenuListProductNameId();
-    console.log(result);
     expect(result).toEqual(expectedProducts);
   });
 });
