@@ -167,7 +167,6 @@ describe('MenuButtons', () => {
     it("создать клавиатуру из результата запроса открытой подкатегории", async () => {
       const result = await menuButtons.creatingMenuListProductNameIdSubcategoryButtons('Category A');
       expect(result).toBeDefined();
-      console.log(result.reply_markup.inline_keyboard)
       expect(result.reply_markup.inline_keyboard).toHaveLength(3);//проверка того что есть длинна и она равно 3
       expect(result.reply_markup.inline_keyboard[0][0]).toEqual({//рекурсивное сравнение всех обьектов
         text: "Product A",
