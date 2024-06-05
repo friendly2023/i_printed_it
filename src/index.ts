@@ -1,6 +1,6 @@
 import { token } from './serviceKey/telegramKey';
 import TelegramApi from 'node-telegram-bot-api';
-const bot: any = new TelegramApi(token, { polling: true });
+export const bot: any = new TelegramApi(token, { polling: true });
 import { MenuButtons, MenuRepository } from './buttons/menu';
 import { FigurineCard, FigurineCardRepository } from './productCard/figurineСard';
 import { DatabaseConnection, DatabaseRepository } from './DB/query';
@@ -13,7 +13,7 @@ class MenuItems {
 
 
 
-class Message {
+export class MyBot {
     private bot: any;
     private menuRepository: MenuRepository;
     private figurineCardRepository: FigurineCardRepository;
@@ -148,7 +148,7 @@ async function createMessageInstance() {
     const menuRepository: MenuRepository = new MenuButtons(productRepository);
     const figurineCardRepository: FigurineCardRepository = new FigurineCard('productId', productRepository);
 
-    const message = new Message(bot, menuRepository, figurineCardRepository, productRepository);
+    const message = new MyBot(bot, menuRepository, figurineCardRepository, productRepository);
     return message;
 }
 

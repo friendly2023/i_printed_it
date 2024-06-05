@@ -12,7 +12,7 @@ class InlineKeyboardButton {
     callback_data!: string;
 }
 
-class ReplyMarkup {
+export class ReplyMarkup {
     reply_markup!: {
         inline_keyboard: InlineKeyboardButton[][];
     };
