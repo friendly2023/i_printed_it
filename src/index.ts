@@ -2,7 +2,7 @@ import { token } from './serviceKey/telegramKey';
 import TelegramApi from 'node-telegram-bot-api';
 export const bot: any = new TelegramApi(token, { polling: true });
 import { MenuButtons, MenuRepository } from './buttons/menu';
-import { FigurineCard, FigurineCardRepository } from './productCard/figurineСard';
+import { FigurineCard } from './productCard/figurineСard';
 import { DatabaseConnection, DatabaseRepository } from './DB/query';
 import { ProductRepository, RequestsToDB } from './DB/requestsToDB';
 
@@ -11,23 +11,20 @@ class MenuItems {
     description!: string;
 }
 
+interface MyBotInterface {
+    outputMessage(): any;
+}
 
-
-export class MyBot {
+export class MyBot implements MyBotInterface {
     private bot: any;
     private menuRepository: MenuRepository;
-    private figurineCardRepository: FigurineCardRepository;
     private productRepository: ProductRepository;
 
-    constructor(bot: any,
-        menuRepository: MenuRepository,
-        figurineCardRepository: FigurineCardRepository,
-        productRepository: ProductRepository) {
+    constructor(menuRepository: MenuRepository, productRepository: ProductRepository) {
         this.bot = bot;
-        this.outputMessage();
         this.menuRepository = menuRepository;
-        this.figurineCardRepository = figurineCardRepository;
         this.productRepository = productRepository;
+        this.outputMessage();
     }
 
     private async Menu() {
@@ -99,7 +96,7 @@ export class MyBot {
         });
     };
 
-    private async handleStart(chatId: number) {
+    private async handleStart(chatId: number): Promise<string> {
         return await this.bot.sendMessage(chatId, `Добро пожаловать в наш интернет-магазин! Для перехода в меню, отправьте команду /menu`);
     };
 
@@ -146,9 +143,8 @@ async function createMessageInstance() {
     const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
     const productRepository: ProductRepository = new RequestsToDB(databaseRepository);
     const menuRepository: MenuRepository = new MenuButtons(productRepository);
-    const figurineCardRepository: FigurineCardRepository = new FigurineCard('productId', productRepository);
 
-    const message = new MyBot(bot, menuRepository, figurineCardRepository, productRepository);
+    const message = new MyBot(menuRepository, productRepository);
     return message;
 }
 
