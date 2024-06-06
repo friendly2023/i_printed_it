@@ -2,7 +2,7 @@ import { token } from './serviceKey/telegramKey';
 import TelegramApi from 'node-telegram-bot-api';
 export const bot: any = new TelegramApi(token, { polling: true });
 import { MenuButtons, MenuRepository } from './buttons/menu';
-import { FigurineCard } from './productCard/figurineСard';
+import { FigurineCard, FigurineCardRepository } from './productCard/figurineСard';
 import { DatabaseConnection, DatabaseRepository } from './DB/query';
 import { ProductRepository, RequestsToDB } from './DB/requestsToDB';
 
@@ -18,11 +18,13 @@ interface MyBotInterface {
 export class MyBot implements MyBotInterface {
     private bot: any;
     private menuRepository: MenuRepository;
+    private figurineCardRepository: FigurineCardRepository;
     private productRepository: ProductRepository;
 
-    constructor(menuRepository: MenuRepository, productRepository: ProductRepository) {
+    constructor(menuRepository: MenuRepository, figurineCardRepository: FigurineCardRepository, productRepository: ProductRepository) {
         this.bot = bot;
         this.menuRepository = menuRepository;
+        this.figurineCardRepository = figurineCardRepository;
         this.productRepository = productRepository;
         this.outputMessage();
     }
@@ -114,8 +116,8 @@ export class MyBot implements MyBotInterface {
 
     private async handleLuckyMe(chatId: number) {
         let randomProduct: string = await this.menuRepository.selectionRandomProduct();
-        let figurineСard = new FigurineCard(randomProduct, this.productRepository);
-        return await bot.sendMediaGroup(chatId, await figurineСard.writingMessageToPhoto());
+        let figurineСard = new FigurineCard(this.productRepository);
+        return await bot.sendMediaGroup(chatId, await figurineСard.writingMessageToPhoto(randomProduct));
     };
 
     private async handleMenuCategoriesOpen(chatId: number, text: string[]) {
@@ -134,8 +136,7 @@ export class MyBot implements MyBotInterface {
     };
 
     private async handleIdentifier4(chatId: number, text: string[]) {
-        let figurineСard = new FigurineCard(text[0], this.productRepository);
-        return await bot.sendMediaGroup(chatId, await figurineСard.writingMessageToPhoto());
+        return await bot.sendMediaGroup(chatId, await this.figurineCardRepository.writingMessageToPhoto(text[0]));
     };
 }
 
@@ -143,8 +144,9 @@ async function createMessageInstance() {
     const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
     const productRepository: ProductRepository = new RequestsToDB(databaseRepository);
     const menuRepository: MenuRepository = new MenuButtons(productRepository);
+    const figurineCardRepository: FigurineCardRepository = new FigurineCard(productRepository);
 
-    const message = new MyBot(menuRepository, productRepository);
+    const message = new MyBot(menuRepository, figurineCardRepository, productRepository);
     return message;
 }
 
