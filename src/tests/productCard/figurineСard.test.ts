@@ -18,11 +18,11 @@ describe('FigurineCard', () => {
             ])
         };
 
-        figurineCard = new FigurineCard('testProductId', productRepository as ProductRepository);
+        figurineCard = new FigurineCard(productRepository as ProductRepository);
     });
 
     it('должен быть возвращен массив фотографий с добавленной подписью', async () => {
-        const result = await figurineCard.writingMessageToPhoto();
+        const result = await figurineCard.writingMessageToPhoto('testProductId');
 
         expect(result).toEqual([
             {

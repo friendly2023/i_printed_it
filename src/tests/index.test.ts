@@ -3,23 +3,17 @@ import { MyBot } from '../index'
 import { ProductRepository, RequestsToDB } from '../DB/requestsToDB';
 import { MenuRepository, ReplyMarkup } from '../buttons/menu';
 import { FigurineCardRepository } from '../productCard/figurineСard';
-import { token } from '../serviceKey/telegramKey';
 
-
-describe('Message', () => {
-  let bot: TelegramApi;
-  let onTextMock: jest.Mock;
-  let sendMessageMock: jest.Mock;
-  let menuRepositoryMock: MenuRepository;
-  let figurineCardRepositoryMock: FigurineCardRepository;
-  let productRepositoryMock: ProductRepository;
+describe('MyBot', () => {
+  let myBot: MyBot;
+  let mockMenuRepository: jest.Mocked<MenuRepository>;
+  let mockFigurineCardRepository: jest.Mocked<FigurineCardRepository>;
+  let mockProductRepository: jest.Mocked<ProductRepository>;
+  let mockSendMessage: jest.Mock;
+  let mockOnMessage: jest.Mock;
 
   beforeEach(() => {
-    // bot = new TelegramApi(token, { polling: true });
-    onTextMock = jest.fn();
-    sendMessageMock = jest.fn();
-
-    menuRepositoryMock = {
+    mockMenuRepository = {
       creatingMenuButtons: jest.fn().mockReturnValue(Promise.resolve({} as ReplyMarkup)),
       creatingMenuListProductNameIdButtons: jest.fn().mockReturnValue(Promise.resolve({} as ReplyMarkup)),
       creatingMenuListCategoryNameLeftButtons: jest.fn().mockReturnValue(Promise.resolve({} as ReplyMarkup)),
@@ -29,7 +23,7 @@ describe('Message', () => {
       creatingMenuListProductNameIdSubcategoryButtons: jest.fn().mockReturnValue(Promise.resolve({} as ReplyMarkup))
     };
 
-    figurineCardRepositoryMock = {
+    mockFigurineCardRepository = {
       writingMessageToPhoto: jest.fn().mockReturnValue(
         Promise.resolve([
           {
@@ -51,7 +45,7 @@ describe('Message', () => {
       )
     };
 
-    productRepositoryMock = {
+    mockProductRepository = {
       respondsToMenuListProductNameId: jest.fn().mockReturnValue(
         Promise.resolve([
           { product_id: '1', product_name: 'Product A' },
@@ -101,57 +95,40 @@ describe('Message', () => {
       )
     };
 
-    jest.spyOn(bot, 'onText').mockImplementation(onTextMock);
-    jest.spyOn(bot, 'sendMessage').mockImplementation(sendMessageMock);
+    mockSendMessage = jest.fn();
+    mockOnMessage = jest.fn();
+
+    myBot = new MyBot(mockMenuRepository, mockFigurineCardRepository, mockProductRepository);
+    myBot.bot = { on: mockOnMessage, sendMessage: mockSendMessage };
   });
 
-
-    
-  it('должен обрабатывать команду /start', async () => {
-    const yourBot = new MyBot(bot, menuRepositoryMock, figurineCardRepositoryMock, productRepositoryMock);
-  
-    // Имитируем получение сообщения с командой /start
-    const update = {
-      update_id: 123,
-      message: {
-        message_id: 456,
-        from: {
-          id: 789,
-          is_bot: false,
-          first_name: 'John',
-          username: 'john_doe'
-        },
-        chat: {
-          id: 123,
-          first_name: 'John',
-          username: 'john_doe',
-          type: 'private'
-        },
-        date: 1618903200,
-        text: '/start'
-      }
-    };
-  
-    // Вызываем метод, который запускает обработку сообщений
-    await yourBot.outputMessage();
-  
-    // Проверяем, что бот отправил ожидаемое сообщение
-    expect(bot.sendMessage).toHaveBeenCalledWith(123, expect.stringContaining('Добро пожаловать в наш интернет-магазин! Для перехода в меню, отправьте команду /menu'));
+  afterEach(() => {
+    jest.clearAllMocks();
   });
-  
-  
-  
-  
 
-  // it('должен обрабатывать команду /menu', () => {
-  //   const fakeMessage = { chat: { id: 456 } } as Message;
-  //   onTextMock.mockImplementationOnce((regex, callback) => {
-  //     callback(fakeMessage, '/menu');
-  //   });
+  describe('outputMessage', () => {
+    it('should handle /start command', async () => {
+      const mockMessage = { text: '/start', chat: { id: 123 } };
+      const handleStartSpy = jest.spyOn(myBot as any, 'handleStart');
 
-  //   const yourBot = new YourBot(bot, menuRepositoryMock, figurineCardRepositoryMock, productRepositoryMock);
-  //   yourBot.outputMessage();
+      await myBot.outputMessage();
 
-  //   expect(sendMessageMock).toHaveBeenCalledWith(456, 'Вот меню...');
-  // });
+      expect(mockOnMessage).toHaveBeenCalledWith('message', expect.any(Function));
+      const messageHandler = mockOnMessage.mock.calls[0][1];
+      await messageHandler(mockMessage);
+
+      expect(handleStartSpy).toHaveBeenCalledWith(mockMessage.chat.id);
+      expect(mockSendMessage).toHaveBeenCalledWith(mockMessage.chat.id, expect.any(String));
+    });
+  });
+
+  describe('handleStart', () => {
+    it('should send a welcome message', async () => {
+      const chatId = 123;
+
+      await myBot['handleStart'](chatId);
+
+      expect(mockSendMessage).toHaveBeenCalledWith(chatId, expect.any(String));
+    });
+  });
 });

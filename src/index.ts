@@ -16,7 +16,7 @@ interface MyBotInterface {
 }
 
 export class MyBot implements MyBotInterface {
-    private bot: any;
+    bot: any;
     private menuRepository: MenuRepository;
     private figurineCardRepository: FigurineCardRepository;
     private productRepository: ProductRepository;
