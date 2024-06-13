@@ -11,6 +11,7 @@ describe('MyBot', () => {
   let mockProductRepository: jest.Mocked<ProductRepository>;
   let mockSendMessage: jest.Mock;
   let mockOnMessage: jest.Mock;
+  let mockOnCallback: jest.Mock;
 
   beforeEach(() => {
     mockMenuRepository = {
@@ -97,6 +98,7 @@ describe('MyBot', () => {
 
     mockSendMessage = jest.fn();
     mockOnMessage = jest.fn();
+    mockOnCallback = jest.fn();
 
     myBot = new MyBot(mockMenuRepository, mockFigurineCardRepository, mockProductRepository);
     myBot.bot = { on: mockOnMessage, sendMessage: mockSendMessage };
@@ -106,10 +108,11 @@ describe('MyBot', () => {
     jest.clearAllMocks();
   });
 
-  describe('outputMessage', () => {
-    it('should handle /start command', async () => {
+  describe('outputMessage, вызов базовых кнопок', () => {
+    it('вызуваются функции при нажатии /start', async () => {
       const mockMessage = { text: '/start', chat: { id: 123 } };
       const handleStartSpy = jest.spyOn(myBot as any, 'handleStart');
+      const verificationMessage: string = `Добро пожаловать в наш интернет-магазин! Для перехода в меню, отправьте команду /menu`;
 
       await myBot.outputMessage();
 
@@ -118,17 +121,56 @@ describe('MyBot', () => {
       await messageHandler(mockMessage);
 
       expect(handleStartSpy).toHaveBeenCalledWith(mockMessage.chat.id);
-      expect(mockSendMessage).toHaveBeenCalledWith(mockMessage.chat.id, expect.any(String));
+      expect(mockSendMessage).toHaveBeenCalledWith(mockMessage.chat.id, verificationMessage);
     });
+
+    it('вызуваются функции при нажатии /menu', async () => {
+      const mockMessage = { text: '/menu', chat: { id: 123 } };
+      const handleMenuSpy = jest.spyOn(myBot as any, 'handleMenu');
+      const verificationMessage: string = `Выберете вариант отображения:`;
+
+
+      await myBot.outputMessage();
+
+      expect(mockOnMessage).toHaveBeenCalledWith('message', expect.any(Function));
+      const messageHandler = mockOnMessage.mock.calls[0][1];
+      await messageHandler(mockMessage);
+
+      expect(handleMenuSpy).toHaveBeenCalledWith(mockMessage.chat.id);
+      expect(mockSendMessage).toHaveBeenCalledWith(mockMessage.chat.id, verificationMessage, {});
+    }); 
   });
 
-  describe('handleStart', () => {
-    it('should send a welcome message', async () => {
-      const chatId = 123;
+  // describe('outputMessage, обработка callback_query', () => {
+  //   it('handleMenuList', async () => {
+  //     const mockCallbackQuery = { data: 'menuList', message: { chat: { id: 123 } } };
+  //     const handleMenuListSpy = jest.spyOn(myBot as any, 'handleMenuList');
+  //     const verificationMessage: string = `Общий список:`;
+  
+  //     await myBot.outputMessage();
+  
+  //     const callbackHandler = mockOnCallback.mock.calls[0][1];
+  //     console.log(mockOnCallback.mock.calls)
+  //     // await callbackHandler(mockCallbackQuery);
+  
+  //     // expect(handleMenuListSpy).toHaveBeenCalledWith(mockCallbackQuery.message.chat.id);
+  //     // expect(mockSendMessage).toHaveBeenCalledWith(mockCallbackQuery.message.chat.id, verificationMessage, {});
+  //   });
+  // });
+  
+  
+  
 
-      await myBot['handleStart'](chatId);
 
-      expect(mockSendMessage).toHaveBeenCalledWith(chatId, expect.any(String));
-    });
-  });
+
+  
+  // describe('handleStart', () => {
+  //   it('отправляется сообщение на /start', async () => {
+  //     const chatId = 123;
+
+  //     await myBot['handleStart'](chatId);
+
+  //     expect(mockSendMessage).toHaveBeenCalledWith(chatId, expect.any(String));
+  //   });
+  // });
 });
