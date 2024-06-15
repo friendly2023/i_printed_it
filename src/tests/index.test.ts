@@ -3,6 +3,7 @@ import { MyBot } from '../index'
 import { ProductRepository, RequestsToDB } from '../DB/requestsToDB';
 import { MenuRepository, ReplyMarkup } from '../buttons/menu';
 import { FigurineCardRepository } from '../productCard/figurineСard';
+import { Update, CallbackQuery } from 'node-telegram-bot-api';
 
 describe('MyBot', () => {
   let myBot: MyBot;
@@ -142,35 +143,25 @@ describe('MyBot', () => {
   });
 
   // describe('outputMessage, обработка callback_query', () => {
-  //   it('handleMenuList', async () => {
-  //     const mockCallbackQuery = { data: 'menuList', message: { chat: { id: 123 } } };
+  //   it('обрабатывает callback_query с данными "menuList"', async () => {
+
+  //     const mockCallbackQuery = {
+  //       message: { chat: { id: 123 } },
+  //       data: 'menuList//somedata',
+  //     };
+
   //     const handleMenuListSpy = jest.spyOn(myBot as any, 'handleMenuList');
-  //     const verificationMessage: string = `Общий список:`;
-  
+  //     const verificationMessage = `Общий список:`;
+
   //     await myBot.outputMessage();
-  
-  //     const callbackHandler = mockOnCallback.mock.calls[0][1];
-  //     console.log(mockOnCallback.mock.calls)
-  //     // await callbackHandler(mockCallbackQuery);
-  
-  //     // expect(handleMenuListSpy).toHaveBeenCalledWith(mockCallbackQuery.message.chat.id);
-  //     // expect(mockSendMessage).toHaveBeenCalledWith(mockCallbackQuery.message.chat.id, verificationMessage, {});
-  //   });
-  // });
-  
-  
-  
 
+  //     expect(mockOnMessage).toHaveBeenCalledWith('callback_query', expect.any(Function));
+  //     const callbackQueryHandler = mockOnMessage.mock.calls[0][1];
+  //     console.log(mockOnMessage.mock.calls)
+  //     await callbackQueryHandler(mockCallbackQuery);
 
-
-  
-  // describe('handleStart', () => {
-  //   it('отправляется сообщение на /start', async () => {
-  //     const chatId = 123;
-
-  //     await myBot['handleStart'](chatId);
-
-  //     expect(mockSendMessage).toHaveBeenCalledWith(chatId, expect.any(String));
+  //     expect(handleMenuListSpy).toHaveBeenCalledWith(mockCallbackQuery.message.chat.id);
+  //     expect(mockSendMessage).toHaveBeenCalledWith(mockCallbackQuery.message.chat.id, verificationMessage, {});
   //   });
   // });
 });
