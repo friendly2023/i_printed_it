@@ -6,6 +6,8 @@ npm install pg
 npm install --save @types/pg
 npm i node-telegram-bot-api
 npm install --save @types/node-telegram-bot-api
+npm install --save-dev jest @types/jest ts-jest
+npm install --save-dev istanbul @types/istanbul
 
 
 Цели:
@@ -22,6 +24,7 @@ npm install --save @types/node-telegram-bot-api
   - [x] переписать функцию создания массива кнопок
   - [x] переписать функцию вывода карточки товара
   - [x] в случае отсутствия фото - изменить доступность на 'no'
+  - [ ] написать юнит тесты
   - [ ] поменять источник фото
   - [ ] разбить карточку товара на части для возможности включения "корзины"
   - [ ] корзина

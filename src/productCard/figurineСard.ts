@@ -2,6 +2,7 @@ import {
     RequestsToDB,
     ProductsPhoto,
     ProductsDescription,
+    ProductRepository,
 } from '../DB/requestsToDB';
 
 class ArrayPhotos {
@@ -10,28 +11,32 @@ class ArrayPhotos {
     media!: string;
 }
 
-export class FigurineCard {
-    constructor(public productId: string) {
-        this.productId = productId;
+export interface FigurineCardRepository {
+    writingMessageToPhoto(productId: string): Promise<ArrayPhotos[]>;
+}
+
+export class FigurineCard implements FigurineCardRepository {
+    private productRepository: ProductRepository;
+
+    constructor(productRepository: ProductRepository) {
+        this.productRepository = productRepository;
     }
 
-    private async resultRespondsImagePath(): Promise<ProductsPhoto[]> {
-        let requestsToDB = new RequestsToDB();
-        return await requestsToDB.respondsImagePath(this.productId);
+    private async resultRespondsImagePath(productId: string): Promise<ProductsPhoto[]> {
+        return await this.productRepository.respondsImagePath(productId);
     }
 
-    private async resultProductCard(): Promise<ProductsDescription[]> {
-        let requestsToDB = new RequestsToDB();
-        return await requestsToDB.respondsProductCard(this.productId);
+    private async resultProductCard(productId: string): Promise<ProductsDescription[]> {
+        return await this.productRepository.respondsProductCard(productId);
     }
 
-    async writingMessageToPhoto(): Promise<ArrayPhotos[]> {
-        let result = await this.resultProductCard();
+    async writingMessageToPhoto(productId: string): Promise<ArrayPhotos[]> {
+        let result = await this.resultProductCard(productId);
         let messageToPhoto: string = `"${result[0].product_name}"
 Описание: ${result[0].product_description}
 Стоимость: ${result[0].price} Р`;
 
-        return (await this.resultRespondsImagePath()).map((item, index) => {
+        return (await this.resultRespondsImagePath(productId)).map((item, index) => {
             if (index === 0) {
                 return {
                     type: 'photo',

@@ -1,27 +1,34 @@
 import pg from 'pg';
 import { config } from '../serviceKey/dbKey';
 
-// (async () => console.log(await executeQuery('SELECT * FROM users')))()
+const client = new pg.Client(config);
 
-export class DatabaseConnection {
-    private client: pg.Client;
-    private query: string;
+export interface DatabaseRepository {
+    executeQuery(query: string): Promise<pg.QueryResult>;
+}
 
-    constructor(query: string) {
-        this.client = new pg.Client(config);
-        this.query = query;
+export class DatabaseConnection implements DatabaseRepository {
+    private static instance: DatabaseConnection;
+
+    private constructor() {
     }
 
-    async executeQuery(): Promise<pg.QueryResult> {
+    public static async getInstance(): Promise<DatabaseConnection> {
+        if (!DatabaseConnection.instance) {
+            await client.connect();
+            DatabaseConnection.instance = new DatabaseConnection();
+        }
+        return DatabaseConnection.instance;
+    }
+
+    async executeQuery(query: string): Promise<pg.QueryResult> {
         try {
-            await this.client.connect();// Установка соединения с базой данных
-            const result = await this.client.query(this.query);// Выполнение запроса
-            await this.client.end();// Закрытие соединения с базой данных
-            return result;// Возвращаем результат запроса
+            const result = await client.query(query);
+            return result;
         } catch (err: any) {
             console.error('Ошибка при выполнении запроса:', err.message);
-            await this.client.end();// В случае ошибки также закрываем соединение с базой данных
-            throw err;// Пробрасываем ошибку дальше
+            await client.end();
+            throw err;
         }
     }
 }
