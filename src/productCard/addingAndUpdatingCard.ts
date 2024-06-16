@@ -125,7 +125,7 @@ class UpdateProductRepository implements IUpdateProductRepository {
     }
 
     async updateDescription(id: string, description: string): Promise<string> {
-        const updateQuery: string = `UPDATE productsPhoto
+        const updateQuery: string = `UPDATE productsDescription
         SET product_description='${description}'
         where product_id='${id}';`;
 
@@ -137,10 +137,12 @@ class UpdateProductRepository implements IUpdateProductRepository {
     async updatePhoto(newPhotoData: string[][]): Promise<string> {
         let productId: string = newPhotoData[0][0];
 
-        const updateQuery: string = `UPDATE productsDescription
-        SET ${newPhotoData.map(([id, path, number]) => `('${id}', '${path}', '${number}')`).join(', ')}
-        where product_id='${productId}';`;
+        const delQuery: string = `DELETE FROM productsPhoto WHERE product_id='${productId}';`;
 
+        const updateQuery: string = `INSERT INTO productsPhoto (product_id, image_path, order_number)
+        VALUES ${newPhotoData.map(([id, path, number]) => `('${id}', '${path}', '${number}')`).join(', ')}`;
+
+        await this.databaseRepository.executeQuery(delQuery);
         await this.databaseRepository.executeQuery(updateQuery);
 
         return `+Фото для продукта с ID = '${productId}' обновлены`;
@@ -199,9 +201,8 @@ async function checkingRequests() {
 
     let description = 'какое-то описание'
 
-    let newPhotoData: string[][] = [['0107', 'https://disk.yandex.ru/i/7KGO2i0cHtc51A', '1'],
-                                    ['0107', 'https://disk.yandex.ru/i/I4jEtZODkTtdow', '2'],
-                                    ['0107', 'https://disk.yandex.ru/i/GZBep_eC3zMYrA', '3']];
+    let newPhotoData: string[][] = [['0087', 'https://disk.yandex.ru/i/zpLjix74hX-a6Q', '1'],
+                                    ['0087', 'https://disk.yandex.ru/i/-6tkkT9X17gJ2A', '2']];
 
     // console.log(await queryExecutor.newCategory(categoryL, category));
     // console.log(await queryExecutor.newProduct(productId, productName, productPrice));
