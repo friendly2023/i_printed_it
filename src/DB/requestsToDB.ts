@@ -24,10 +24,20 @@ export class ProductsPhoto {
     image_path!: string;
 };
 
-export class ProductsDescription {
+export class ProductsDescription1 {
     product_name!: string;
-    product_description!: string;
+    rating!: number;
     price!: number;
+}
+
+export class ProductsDescription2 {
+    product_description!: string;
+    category_name!: string;
+    category_name_left!: string;
+}
+
+export class FeedbackRating {
+    rating!: number;
 }
 
 export interface ProductRepository {
@@ -37,7 +47,9 @@ export interface ProductRepository {
     respondsToMenuListCategoryName(categoryNameLeft: string): Promise<CategoryName[]>;
     respondsToMenuListProductNameIdSubcategory(categoryName: string): Promise<Product[]>;
     respondsImagePath(productId: string): Promise<ProductsPhoto[]>;
-    respondsProductCard(productId: string): Promise<ProductsDescription[]>;
+    respondsProductCard1(productId: string): Promise<ProductsDescription1[]>;
+    respondsProductCard2(productId: string): Promise<ProductsDescription2[]>;
+    respondsFeedbackRating(productId: string):Promise<FeedbackRating[]>;
 }
 
 export class RequestsToDB implements ProductRepository {
@@ -109,12 +121,38 @@ export class RequestsToDB implements ProductRepository {
         return (await this.databaseRepository.executeQuery(query)).rows;
     }
 
-    async respondsProductCard(productId: string): Promise<ProductsDescription[]> {
-        let query: string = `SELECT products.product_name, productsDescription.product_description, products.price
+    async respondsProductCard1(productId: string): Promise<ProductsDescription1[]> {
+        let query: string = `SELECT product_name, price
                             FROM products
-                            INNER JOIN productsDescription ON products.product_id=productsDescription.product_id
-                            WHERE products.access='yes' and products.product_id='${productId}';`;
+                            WHERE access='yes' and product_id='${productId}';`;
+
+        return (await this.databaseRepository.executeQuery(query)).rows;
+    }
+
+    async respondsProductCard2(productId: string): Promise<ProductsDescription2[]> {
+        let query: string = `SELECT productsDescription.product_description, categories.category_name_left, categorieId.category_name
+                            FROM productsDescription
+                            INNER JOIN categorieId ON productsDescription.product_id=categorieId.product_id
+                            INNER JOIN categories ON categorieId.category_name=categories.category_name
+                            INNER JOIN products ON productsDescription.product_id=products.product_id
+                            WHERE products.access='yes' and productsDescription.product_id='${productId}';`;
+
+        return (await this.databaseRepository.executeQuery(query)).rows;
+    }
+
+    async respondsFeedbackRating(productId: string): Promise<FeedbackRating[]> {
+        let query: string = `SELECT rating
+                            FROM feedback
+                            WHERE product_id='${productId}';`;
 
         return (await this.databaseRepository.executeQuery(query)).rows;
     }
 }
+
+// checkingRequests()
+// async function checkingRequests() {
+//     const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
+//     const queryExecutor = new RequestsToDB(databaseRepository);
+
+//     console.log(await queryExecutor.respondsFeedbackRating('0106'));
+// }
