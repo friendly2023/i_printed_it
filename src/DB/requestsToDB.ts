@@ -26,7 +26,6 @@ export class ProductsPhoto {
 
 export class ProductsDescription1 {
     product_name!: string;
-    rating!: number;
     price!: number;
 }
 
@@ -130,12 +129,10 @@ export class RequestsToDB implements ProductRepository {
     }
 
     async respondsProductCard2(productId: string): Promise<ProductsDescription2[]> {
-        let query: string = `SELECT productsDescription.product_description, categories.category_name_left, categorieId.category_name
-                            FROM productsDescription
-                            INNER JOIN categorieId ON productsDescription.product_id=categorieId.product_id
+        let query: string = `SELECT categories.category_name_left, categorieId.category_name
+                            FROM categorieId
                             INNER JOIN categories ON categorieId.category_name=categories.category_name
-                            INNER JOIN products ON productsDescription.product_id=products.product_id
-                            WHERE products.access='yes' and productsDescription.product_id='${productId}';`;
+                            WHERE categorieId.product_id='${productId}';`;
 
         return (await this.databaseRepository.executeQuery(query)).rows;
     }
@@ -154,5 +151,5 @@ export class RequestsToDB implements ProductRepository {
 //     const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
 //     const queryExecutor = new RequestsToDB(databaseRepository);
 
-//     console.log(await queryExecutor.respondsFeedbackRating('0106'));
+//     console.log(await queryExecutor.respondsProductCard2('0106'));
 // }

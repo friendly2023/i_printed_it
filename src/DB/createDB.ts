@@ -50,6 +50,14 @@ let creatTableShoppingCart: string = `CREATE TABLE shoppingCart (
     sum varchar(6) NOT NULL
 );`;
 
+let creatTableFeedback: string = `CREATE TABLE feedback (
+    id SERIAL PRIMARY KEY,
+    product_id varchar(6),
+    user_id varchar(20),
+    rating SMALLINT CHECK (my_column BETWEEN 1 AND 5),
+    response varchar(1000)
+);`;
+
 
 // const queryExecutor = new DatabaseConnection(creatTableUsers);
 // queryExecutor.executeQuery()

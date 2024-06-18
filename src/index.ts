@@ -136,8 +136,20 @@ export class MyBot implements MyBotInterface {
     };
 
     private async handleIdentifier4(chatId: number, text: string[]) {
-        return await bot.sendMediaGroup(chatId, await this.figurineCardRepository.writingMessageToPhoto(text[0]));
+        const firstMessage = await this.sendingFigurineCardImage(chatId, text);
+        const secondMessage = await this.sendingFigurineCardButtons(chatId, text);
     };
+
+    private async sendingFigurineCardImage(chatId: number, text: string[]) {
+        return await bot.sendMediaGroup(chatId, await this.figurineCardRepository.writingMessageToPhoto(text[0]));
+    }
+
+    private async sendingFigurineCardButtons(chatId: number, text: string[]) {
+        let resultSecondMessage = await this.menuRepository.creatingFigurineCardButtons(text[0]);
+
+        return await bot.sendMessage(chatId, `${resultSecondMessage[0]}`,
+            resultSecondMessage[1]);
+    }
 }
 
 async function createMessageInstance() {
