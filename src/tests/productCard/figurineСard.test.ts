@@ -13,8 +13,11 @@ describe('FigurineCard', () => {
                 { image_path: "path2" },
                 { image_path: "path3" },
             ]),
-            respondsProductCard: jest.fn().mockResolvedValue([
-                { product_name: 'Product A', product_description: 'description1', price: '1000' },
+            respondsProductCard1: jest.fn().mockResolvedValue([
+                { product_name: 'Product A', price: '1000'},
+            ]),
+            respondsFeedbackRating: jest.fn().mockResolvedValue([
+                { rating: 5 }, { rating: 4 }
             ])
         };
 
@@ -23,11 +26,16 @@ describe('FigurineCard', () => {
 
     it('должен быть возвращен массив фотографий с добавленной подписью', async () => {
         const result = await figurineCard.writingMessageToPhoto('testProductId');
+        let message = `'Product A'
+
+⭐️ 4.5 / 5
+
+💰 1000`;
 
         expect(result).toEqual([
             {
                 type: 'photo',
-                caption: '"Product A"\nОписание: description1\nСтоимость: 1000 Р',
+                caption: message,
                 media: 'path1'
             },
             {
