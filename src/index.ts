@@ -147,8 +147,8 @@ export class MyBot implements MyBotInterface {
     private async sendingFigurineCardButtons(chatId: number, text: string[]) {
         let resultSecondMessage = await this.menuRepository.creatingFigurineCardButtons(text[0]);
 
-        return await bot.sendMessage(chatId, `${resultSecondMessage[0]}`,
-            resultSecondMessage[1]);
+        return await bot.sendMessage(chatId, `Категория: ${resultSecondMessage[0]} > ${resultSecondMessage[1]}`,
+            resultSecondMessage[2]);
     }
 }
 
