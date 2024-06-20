@@ -30,13 +30,20 @@ export class ProductsDescription1 {
 }
 
 export class ProductsDescription2 {
-    product_description!: string;
     category_name!: string;
     category_name_left!: string;
 }
 
 export class FeedbackRating {
     rating!: number;
+}
+
+export class Description {
+    product_description!: string;
+}
+
+export class ProductName {
+    product_name!: string;
 }
 
 export interface ProductRepository {
@@ -48,7 +55,9 @@ export interface ProductRepository {
     respondsImagePath(productId: string): Promise<ProductsPhoto[]>;
     respondsProductCard1(productId: string): Promise<ProductsDescription1[]>;
     respondsProductCard2(productId: string): Promise<ProductsDescription2[]>;
-    respondsFeedbackRating(productId: string):Promise<FeedbackRating[]>;
+    respondsFeedbackRating(productId: string): Promise<FeedbackRating[]>;
+    respondsDescription(productId: string): Promise<Description[]>;
+    respondsProductName(productId: string): Promise<ProductName[]>;
 }
 
 export class RequestsToDB implements ProductRepository {
@@ -144,6 +153,22 @@ export class RequestsToDB implements ProductRepository {
 
         return (await this.databaseRepository.executeQuery(query)).rows;
     }
+
+    async respondsDescription(productId: string): Promise<Description[]> {
+        let query: string = `SELECT product_description
+                                FROM productsDescription
+                                WHERE product_id='${productId}';`;
+
+        return (await this.databaseRepository.executeQuery(query)).rows;
+    }
+
+    async respondsProductName(productId: string): Promise<ProductName[]> {
+        let query: string = `SELECT product_name
+                            FROM products
+                            WHERE product_id='${productId}';`;
+
+        return (await this.databaseRepository.executeQuery(query)).rows;
+    }
 }
 
 // checkingRequests()
@@ -151,5 +176,5 @@ export class RequestsToDB implements ProductRepository {
 //     const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
 //     const queryExecutor = new RequestsToDB(databaseRepository);
 
-//     console.log(await queryExecutor.respondsProductCard2('0106'));
+//     console.log(await queryExecutor.respondsProductName('0106'));
 // }

@@ -89,6 +89,11 @@ export class MyBot implements MyBotInterface {
                 case 'menuCategoriesTwo':
                     this.handleMenuCategoriesTwo(chatId, text);
                     break;
+
+                case 'more':
+                    this.handleMore(chatId, text);
+                    break;
+
             }
 
             if (text[0].match(/\d{4}/g)) {
@@ -149,6 +154,13 @@ export class MyBot implements MyBotInterface {
 
         return await bot.sendMessage(chatId, `Категория: ${resultSecondMessage[0]} > ${resultSecondMessage[1]}`,
             resultSecondMessage[2]);
+    }
+
+    private async handleMore (chatId: number, text: string[]) {
+        let description = await this.productRepository.respondsDescription(text[1]);
+        let message = await this.figurineCardRepository.writingMessageWithDescription(text[1]);
+
+        return await bot.sendMessage(chatId, message);
     }
 }
 

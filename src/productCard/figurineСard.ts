@@ -3,6 +3,8 @@ import {
     ProductsDescription1,
     ProductRepository,
     FeedbackRating,
+    Description,
+    ProductName,
 } from '../DB/requestsToDB';
 
 class ArrayPhotos {
@@ -13,6 +15,7 @@ class ArrayPhotos {
 
 export interface FigurineCardRepository {
     writingMessageToPhoto(productId: string): Promise<ArrayPhotos[]>;
+    writingMessageWithDescription(productId: string): Promise<string>;
 }
 
 export class FigurineCard implements FigurineCardRepository {
@@ -62,5 +65,16 @@ export class FigurineCard implements FigurineCardRepository {
                 };
             }
         });
+    }
+
+    async writingMessageWithDescription(productId: string): Promise<string> {
+        let description: Description[] = await this.productRepository.respondsDescription(productId);
+        let productName: ProductName[] = await this.productRepository.respondsProductName(productId);
+
+        let message: string = `'${productName[0].product_name}'
+➡️ Описание:
+${description[0].product_description}`;
+
+        return message;
     }
 }
