@@ -100,6 +100,10 @@ export class MyBot implements MyBotInterface {
                 case 'feedback':
                     this.handleFeedback(chatId, text);
                     break;
+
+                case 'newrating':
+                    this.handleNewRating(chatId, text);
+                    break;
             }
 
             if (text[0].match(/\d{4}/g)) {
@@ -184,6 +188,16 @@ export class MyBot implements MyBotInterface {
 
         return await bot.sendMessage(chatId, message,
             await this.iButtonsProductCard.creatingButtonsRating(text[1]));
+    }
+
+    private async handleNewRating(chatId: number, text: string[]) {
+        let newRating: number = Number(text[1]);
+        let userId: string = String(chatId);
+        let recordRating = await this.productRepository.recordNewFeedback(text[2], userId, newRating);
+        let nameProduct = await this.productRepository.respondsProductName(text[2]);        
+        let message: string = `Вы оценили в ⭐️${newRating} '${nameProduct[0].product_name}'`;
+
+        return await bot.sendMessage(chatId, message);
     }
 }
 

@@ -63,6 +63,7 @@ export interface ProductRepository {
     respondsDescription(productId: string): Promise<Description[]>;
     respondsProductName(productId: string): Promise<ProductName[]>;
     respondsOldFeedback(productId: string, userId: string): Promise<OldFeedback[]>;
+    recordNewFeedback(productId: string, userId: string, newRating: number): Promise<void>;
 }
 
 export class RequestsToDB implements ProductRepository {
@@ -182,6 +183,14 @@ export class RequestsToDB implements ProductRepository {
 
         return (await this.databaseRepository.executeQuery(query)).rows;
     }
+
+    async recordNewFeedback(productId: string, userId: string, newRating: number): Promise<void> {
+        let query: string = `UPDATE feedback
+                            SET rating ='${newRating}'
+                            WHERE user_id='${userId}' AND product_id='${productId}';`;
+
+        await this.databaseRepository.executeQuery(query)
+    }
 }
 
 // checkingRequests()
@@ -189,5 +198,5 @@ export class RequestsToDB implements ProductRepository {
 //     const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
 //     const queryExecutor = new RequestsToDB(databaseRepository);
 
-//     console.log(await queryExecutor.respondsOldFeedback('0106', '412993464'));
+//     console.log(await queryExecutor.recordNewFeedback('0106', '412993464', 5));
 // }

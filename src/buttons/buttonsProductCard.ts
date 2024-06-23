@@ -32,11 +32,11 @@ export class ButtonsProductCard implements IButtonsProductCard {
     async creatingButtonsRating(productId: string): Promise<ReplyMarkup> {
         return {
             reply_markup: {
-                inline_keyboard: [[{ text: '⭐️1', callback_data: `rating//1//${productId}` },
-                                   { text: '⭐️2', callback_data: `rating//2//${productId}` },
-                                   { text: '⭐️3', callback_data: `rating//3//${productId}` },
-                                   { text: '⭐️4', callback_data: `rating//4//${productId}` },
-                                   { text: '⭐️5', callback_data: `rating//5//${productId}` }]]
+                inline_keyboard: [[{ text: '⭐️1', callback_data: `newrating//1//${productId}` },
+                                   { text: '⭐️2', callback_data: `newrating//2//${productId}` },
+                                   { text: '⭐️3', callback_data: `newrating//3//${productId}` },
+                                   { text: '⭐️4', callback_data: `newrating//4//${productId}` },
+                                   { text: '⭐️5', callback_data: `newrating//5//${productId}` }]]
             }
         };
     }
