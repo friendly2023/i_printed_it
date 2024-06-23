@@ -97,6 +97,9 @@ export class MyBot implements MyBotInterface {
                     this.handleMore(chatId, text);
                     break;
 
+                case 'feedback':
+                    this.handleFeedback(chatId, text);
+                    break;
             }
 
             if (text[0].match(/\d{4}/g)) {
@@ -160,10 +163,15 @@ export class MyBot implements MyBotInterface {
     }
 
     private async handleMore (chatId: number, text: string[]) {
-        let description = await this.productRepository.respondsDescription(text[1]);
+        // let description = await this.productRepository.respondsDescription(text[1]);
         let message = await this.figurineCardRepository.writingMessageWithDescription(text[1]);
 
         return await bot.sendMessage(chatId, message);
+    }
+
+    private async handleFeedback (chatId: number, text: string[]) {
+        return await bot.sendMessage(chatId, `можно ставить оценку`,
+            await this.iButtonsProductCard.creatingButtonsRating(text[1]));
     }
 }
 
