@@ -170,7 +170,19 @@ export class MyBot implements MyBotInterface {
     }
 
     private async handleFeedback (chatId: number, text: string[]) {
-        return await bot.sendMessage(chatId, `можно ставить оценку`,
+        let nameProduct = await this.productRepository.respondsProductName(text[1]);
+        let userId: string = String(chatId);
+        let oldFeedback = await this.productRepository.respondsOldFeedback(text[1], userId);
+        let message: string;
+
+        if (oldFeedback.length == 0) {
+            message = `Оцените '${nameProduct[0].product_name}' от ⭐️1 до ⭐️5:`
+        } else {
+            message = `Оцените '${nameProduct[0].product_name}' от ⭐️1 до ⭐️5.
+Ваша старая оценка: ⭐️ ${oldFeedback[0].rating}:`
+        }
+
+        return await bot.sendMessage(chatId, message,
             await this.iButtonsProductCard.creatingButtonsRating(text[1]));
     }
 }
