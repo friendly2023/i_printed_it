@@ -1,5 +1,4 @@
 import {
-    RequestsToDB,
     Product,
     CategoriesLeft,
     ProductsCatalog,
@@ -27,7 +26,6 @@ export interface MenuRepository {
     creatingMenuListByCategoryButtons(categoryNameLeft: string): Promise<ReplyMarkup>;
     creatingMenuListCategoryNameButtons(categoryNameLeft: string): Promise<ReplyMarkup>;
     creatingMenuListProductNameIdSubcategoryButtons(categoryName: string): Promise<ReplyMarkup>;
-    creatingFigurineCardButtons(productId: string): Promise<[string, string, ReplyMarkup]>;
 }
 
 export class MenuButtons implements MenuRepository {
@@ -134,20 +132,5 @@ export class MenuButtons implements MenuRepository {
         let result: Product[] = await this.productRepository.respondsToMenuListProductNameIdSubcategory(categoryName);
         let keys = Object.keys(result[0]);
         return this.creatingInlineKeyboardButton(keys[1], keys[0], result);
-    }
-
-    //кнопки для карточки товара - сообщение 2
-    async creatingFigurineCardButtons(productId: string): Promise<[string, string, ReplyMarkup]> {
-        let result: ProductsDescription2[] = await this.productRepository.respondsProductCard2(productId);
-        let categoryNameLeft: string = result[0].category_name_left;
-        let categoryName: string = result[0].category_name;
-        
-        let arrayButtons: ReplyMarkup = {
-            reply_markup: {
-                inline_keyboard: [[{ text: '➡️ Подробнее', callback_data: `more//${productId}` }],
-                                    [{ text: '⭐️ Оценить', callback_data: `feedback//${productId}` }]]
-            }
-        };
-        return [categoryNameLeft, categoryName, arrayButtons]
     }
 }

@@ -1,10 +1,11 @@
 import { token } from './serviceKey/telegramKey';
 import TelegramApi from 'node-telegram-bot-api';
 export const bot: any = new TelegramApi(token, { polling: true });
-import { MenuButtons, MenuRepository } from './buttons/menu';
+import { MenuButtons, MenuRepository } from './buttons/buttonsMenu';
 import { FigurineCard, FigurineCardRepository } from './productCard/figurineСard';
 import { DatabaseConnection, DatabaseRepository } from './DB/query';
 import { ProductRepository, RequestsToDB } from './DB/requestsToDB';
+import { ButtonsProductCard, IButtonsProductCard } from './buttons/buttonsProductCard';
 
 class MenuItems {
     command!: string;
@@ -20,12 +21,14 @@ export class MyBot implements MyBotInterface {
     private menuRepository: MenuRepository;
     private figurineCardRepository: FigurineCardRepository;
     private productRepository: ProductRepository;
+    private iButtonsProductCard: IButtonsProductCard;
 
-    constructor(menuRepository: MenuRepository, figurineCardRepository: FigurineCardRepository, productRepository: ProductRepository) {
+    constructor(menuRepository: MenuRepository, figurineCardRepository: FigurineCardRepository, productRepository: ProductRepository, iButtonsProductCard: IButtonsProductCard) {
         this.bot = bot;
         this.menuRepository = menuRepository;
         this.figurineCardRepository = figurineCardRepository;
         this.productRepository = productRepository;
+        this.iButtonsProductCard = iButtonsProductCard;
         this.outputMessage();
     }
 
@@ -150,7 +153,7 @@ export class MyBot implements MyBotInterface {
     }
 
     private async sendingFigurineCardButtons(chatId: number, text: string[]) {
-        let resultSecondMessage = await this.menuRepository.creatingFigurineCardButtons(text[0]);
+        let resultSecondMessage = await this.iButtonsProductCard.creatingBasicButtons(text[0]);
 
         return await bot.sendMessage(chatId, `Категория: ${resultSecondMessage[0]} > ${resultSecondMessage[1]}`,
             resultSecondMessage[2]);
@@ -168,9 +171,10 @@ async function createMessageInstance() {
     const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
     const productRepository: ProductRepository = new RequestsToDB(databaseRepository);
     const menuRepository: MenuRepository = new MenuButtons(productRepository);
+    const iButtonsProductCard: IButtonsProductCard = new ButtonsProductCard(productRepository);
     const figurineCardRepository: FigurineCardRepository = new FigurineCard(productRepository);
 
-    const message = new MyBot(menuRepository, figurineCardRepository, productRepository);
+    const message = new MyBot(menuRepository, figurineCardRepository, productRepository, iButtonsProductCard);
     return message;
 }
 

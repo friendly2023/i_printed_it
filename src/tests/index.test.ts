@@ -1,7 +1,7 @@
 import TelegramApi, { Message } from 'node-telegram-bot-api';
 import { MyBot } from '../index'
 import { ProductRepository, RequestsToDB } from '../DB/requestsToDB';
-import { MenuRepository, ReplyMarkup } from '../buttons/menu';
+import { MenuRepository, ReplyMarkup } from '../buttons/buttonsMenu';
 import { FigurineCardRepository } from '../productCard/figurineСard';
 import { Update, CallbackQuery } from 'node-telegram-bot-api';
 
