@@ -7,7 +7,7 @@ import {
     ProductsDescription2
 } from '../DB/requestsToDB';
 
-class InlineKeyboardButton {
+export class InlineKeyboardButton {
     text!: string;
     callback_data!: string;
 }
