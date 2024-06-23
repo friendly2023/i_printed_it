@@ -41,6 +41,10 @@ export class MyBot implements MyBotInterface {
             {
                 command: '/menu',
                 description: 'Меню'
+            },
+            {
+                command: '/shoppingcart',
+                description: 'Корзина'
             }
         ])
         return menu
@@ -60,6 +64,10 @@ export class MyBot implements MyBotInterface {
 
                 case '/menu':
                     this.handleMenu(chatId);
+                    break;
+
+                case '/shoppingcart':
+                    this.handleShoppingCart(chatId);
                     break;
             }
         });
@@ -124,6 +132,10 @@ export class MyBot implements MyBotInterface {
     private async handleMenu(chatId: number) {
         return await this.bot.sendMessage(chatId, `Выберете вариант отображения:`, await this.menuRepository.creatingMenuButtons());
     };
+
+    private async handleShoppingCart(chatId: number) {
+        return await this.bot.sendMessage(chatId, `Здесь будет корзина`);
+    }
 
     private async handleMenuList(chatId: number) {
         return await bot.sendMessage(chatId, `Общий список:`, await this.menuRepository.creatingMenuListProductNameIdButtons());
