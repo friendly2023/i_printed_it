@@ -104,6 +104,10 @@ export class MyBot implements MyBotInterface {
                 case 'newrating':
                     this.handleNewRating(chatId, text);
                     break;
+
+                case 'back':
+                    this.handleBack(chatId, text);
+                    break;
             }
 
             if (text[0].match(/\d{4}/g)) {
@@ -170,7 +174,7 @@ export class MyBot implements MyBotInterface {
         // let description = await this.productRepository.respondsDescription(text[1]);
         let message = await this.figurineCardRepository.writingMessageWithDescription(text[1]);
 
-        return await bot.sendMessage(chatId, message);
+        return await bot.sendMessage(chatId, message, await this.iButtonsProductCard.creatingButtonsBack(text[1]));
     }
 
     private async handleFeedback (chatId: number, text: string[]) {
@@ -198,7 +202,11 @@ export class MyBot implements MyBotInterface {
         let message: string = `Вы оценили в ⭐️${newRating} '${nameProduct[0].product_name}'.
 Спасибо за отзыв!`;
 
-        return await bot.sendMessage(chatId, message);
+        return await bot.sendMessage(chatId, message, await this.iButtonsProductCard.creatingButtonsBack(text[2]));
+    }
+
+    private async handleBack(chatId: number, text: string[]) {
+        await this.handleIdentifier4(chatId, text.slice(1));
     }
 }
 
