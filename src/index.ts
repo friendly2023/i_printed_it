@@ -195,7 +195,8 @@ export class MyBot implements MyBotInterface {
         let userId: string = String(chatId);
         let recordRating = await this.productRepository.recordNewFeedback(text[2], userId, newRating);
         let nameProduct = await this.productRepository.respondsProductName(text[2]);        
-        let message: string = `Вы оценили в ⭐️${newRating} '${nameProduct[0].product_name}'`;
+        let message: string = `Вы оценили в ⭐️${newRating} '${nameProduct[0].product_name}'.
+Спасибо за отзыв!`;
 
         return await bot.sendMessage(chatId, message);
     }

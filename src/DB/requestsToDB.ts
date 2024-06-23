@@ -185,11 +185,23 @@ export class RequestsToDB implements ProductRepository {
     }
 
     async recordNewFeedback(productId: string, userId: string, newRating: number): Promise<void> {
-        let query: string = `UPDATE feedback
-                            SET rating ='${newRating}'
-                            WHERE user_id='${userId}' AND product_id='${productId}';`;
+        let requestVerification: string = `SELECT * FROM feedback
+                                            WHERE user_id = '${userId}' AND product_id = '${productId}';`;
 
-        await this.databaseRepository.executeQuery(query)
+        let requestRecord: string = `INSERT INTO feedback (product_id, user_id, rating)
+                                    VALUES ('${productId}', '${userId}', '${newRating}');`;
+
+        let requestUpdate: string = `UPDATE feedback
+                                    SET rating = '${newRating}'
+                                    WHERE user_id = '${userId}' AND product_id = '${productId}';`;
+
+        let reqVerification = await this.databaseRepository.executeQuery(requestVerification)
+
+        if (reqVerification.rows.length == 0) {
+            await this.databaseRepository.executeQuery(requestRecord)
+        } else {
+            await this.databaseRepository.executeQuery(requestUpdate)
+        }
     }
 }
 
