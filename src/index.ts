@@ -112,10 +112,6 @@ export class MyBot implements MyBotInterface {
                 case 'newrating':
                     this.handleNewRating(chatId, text);
                     break;
-
-                case 'back':
-                    this.handleBack(chatId, text);
-                    break;
             }
 
             if (text[0].match(/\d{4}/g)) {
@@ -215,10 +211,6 @@ export class MyBot implements MyBotInterface {
 Спасибо за отзыв!`;
 
         return await bot.sendMessage(chatId, message, await this.iButtonsProductCard.creatingButtonsBack(text[2]));
-    }
-
-    private async handleBack(chatId: number, text: string[]) {
-        await this.handleIdentifier4(chatId, text.slice(1));
     }
 }
 

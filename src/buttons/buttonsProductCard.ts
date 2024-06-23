@@ -45,7 +45,7 @@ export class ButtonsProductCard implements IButtonsProductCard {
     }
 
     async descriptionButtonsBack(productId: string): Promise<InlineKeyboardButton> {
-        return { text: 'Назад', callback_data: `back//${productId}`}
+        return { text: 'Назад', callback_data: `${productId}`}
     }
 
     async creatingButtonsBack(productId: string): Promise<ReplyMarkup> {
