@@ -46,6 +46,10 @@ export class ProductName {
     product_name!: string;
 }
 
+class OldFeedback {
+    rating!: number;
+}
+
 export interface ProductRepository {
     respondsToMenuListProductNameId(): Promise<Product[]>;
     respondsToMenuListCategoryNameLeft(): Promise<CategoriesLeft[]>;
@@ -58,6 +62,8 @@ export interface ProductRepository {
     respondsFeedbackRating(productId: string): Promise<FeedbackRating[]>;
     respondsDescription(productId: string): Promise<Description[]>;
     respondsProductName(productId: string): Promise<ProductName[]>;
+    respondsOldFeedback(productId: string, userId: string): Promise<OldFeedback[]>;
+    recordNewFeedback(productId: string, userId: string, newRating: number): Promise<void>;
 }
 
 export class RequestsToDB implements ProductRepository {
@@ -169,6 +175,34 @@ export class RequestsToDB implements ProductRepository {
 
         return (await this.databaseRepository.executeQuery(query)).rows;
     }
+
+    async respondsOldFeedback(productId: string, userId: string): Promise<OldFeedback[]> {
+        let query: string = `SELECT rating
+                            FROM feedback
+                            WHERE user_id='${userId}' AND product_id='${productId}';`;
+
+        return (await this.databaseRepository.executeQuery(query)).rows;
+    }
+
+    async recordNewFeedback(productId: string, userId: string, newRating: number): Promise<void> {
+        let requestVerification: string = `SELECT * FROM feedback
+                                            WHERE user_id = '${userId}' AND product_id = '${productId}';`;
+
+        let requestRecord: string = `INSERT INTO feedback (product_id, user_id, rating)
+                                    VALUES ('${productId}', '${userId}', '${newRating}');`;
+
+        let requestUpdate: string = `UPDATE feedback
+                                    SET rating = '${newRating}'
+                                    WHERE user_id = '${userId}' AND product_id = '${productId}';`;
+
+        let reqVerification = await this.databaseRepository.executeQuery(requestVerification)
+
+        if (reqVerification.rows.length == 0) {
+            await this.databaseRepository.executeQuery(requestRecord)
+        } else {
+            await this.databaseRepository.executeQuery(requestUpdate)
+        }
+    }
 }
 
 // checkingRequests()
@@ -176,5 +210,5 @@ export class RequestsToDB implements ProductRepository {
 //     const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
 //     const queryExecutor = new RequestsToDB(databaseRepository);
 
-//     console.log(await queryExecutor.respondsProductName('0106'));
+//     console.log(await queryExecutor.recordNewFeedback('0106', '412993464', 5));
 // }

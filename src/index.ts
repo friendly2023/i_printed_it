@@ -97,6 +97,17 @@ export class MyBot implements MyBotInterface {
                     this.handleMore(chatId, text);
                     break;
 
+                case 'feedback':
+                    this.handleFeedback(chatId, text);
+                    break;
+
+                case 'newrating':
+                    this.handleNewRating(chatId, text);
+                    break;
+
+                case 'back':
+                    this.handleBack(chatId, text);
+                    break;
             }
 
             if (text[0].match(/\d{4}/g)) {
@@ -160,10 +171,42 @@ export class MyBot implements MyBotInterface {
     }
 
     private async handleMore (chatId: number, text: string[]) {
-        let description = await this.productRepository.respondsDescription(text[1]);
+        // let description = await this.productRepository.respondsDescription(text[1]);
         let message = await this.figurineCardRepository.writingMessageWithDescription(text[1]);
 
-        return await bot.sendMessage(chatId, message);
+        return await bot.sendMessage(chatId, message, await this.iButtonsProductCard.creatingButtonsBack(text[1]));
+    }
+
+    private async handleFeedback (chatId: number, text: string[]) {
+        let nameProduct = await this.productRepository.respondsProductName(text[1]);
+        let userId: string = String(chatId);
+        let oldFeedback = await this.productRepository.respondsOldFeedback(text[1], userId);
+        let message: string;
+
+        if (oldFeedback.length == 0) {
+            message = `Оцените '${nameProduct[0].product_name}' от ⭐️1 до ⭐️5:`
+        } else {
+            message = `Оцените '${nameProduct[0].product_name}' от ⭐️1 до ⭐️5.
+Ваша старая оценка: ⭐️ ${oldFeedback[0].rating}:`
+        }
+
+        return await bot.sendMessage(chatId, message,
+            await this.iButtonsProductCard.creatingButtonsRating(text[1]));
+    }
+
+    private async handleNewRating(chatId: number, text: string[]) {
+        let newRating: number = Number(text[1]);
+        let userId: string = String(chatId);
+        let recordRating = await this.productRepository.recordNewFeedback(text[2], userId, newRating);
+        let nameProduct = await this.productRepository.respondsProductName(text[2]);        
+        let message: string = `Вы оценили в ⭐️${newRating} '${nameProduct[0].product_name}'.
+Спасибо за отзыв!`;
+
+        return await bot.sendMessage(chatId, message, await this.iButtonsProductCard.creatingButtonsBack(text[2]));
+    }
+
+    private async handleBack(chatId: number, text: string[]) {
+        await this.handleIdentifier4(chatId, text.slice(1));
     }
 }
 

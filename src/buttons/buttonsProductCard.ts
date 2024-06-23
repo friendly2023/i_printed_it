@@ -3,6 +3,8 @@ import { ReplyMarkup } from "./buttonsMenu";
 
 export interface IButtonsProductCard {
     creatingBasicButtons(productId: string): Promise<[string, string, ReplyMarkup]>;
+    creatingButtonsRating(productId: string): Promise<ReplyMarkup>;
+    creatingButtonsBack(productId: string): Promise<ReplyMarkup>;
 }
 
 export class ButtonsProductCard implements IButtonsProductCard {
@@ -26,5 +28,26 @@ export class ButtonsProductCard implements IButtonsProductCard {
             }
         };
         return [categoryNameLeft, categoryName, arrayButtons]
+    }
+
+    async creatingButtonsRating(productId: string): Promise<ReplyMarkup> {
+        return {
+            reply_markup: {
+                inline_keyboard: [[{ text: '⭐️1', callback_data: `newrating//1//${productId}` },
+                                   { text: '⭐️2', callback_data: `newrating//2//${productId}` },
+                                   { text: '⭐️3', callback_data: `newrating//3//${productId}` },
+                                   { text: '⭐️4', callback_data: `newrating//4//${productId}` },
+                                   { text: '⭐️5', callback_data: `newrating//5//${productId}` }],
+                                   [{ text: 'Назад', callback_data: `back//${productId}` }]]
+            }
+        };
+    }
+
+    async creatingButtonsBack(productId: string): Promise<ReplyMarkup> {
+        return {
+            reply_markup: {
+                inline_keyboard: [[{ text: 'Назад', callback_data: `back//${productId}` }]]
+            }
+        };
     }
 }
