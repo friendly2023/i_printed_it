@@ -6,6 +6,7 @@ export interface IButtonsProductCard {
     creatingButtonsRating(productId: string): Promise<ReplyMarkup>;
     creatingButtonsBack(productId: string): Promise<ReplyMarkup>;
     descriptionButtonsBack(productId: string): Promise<InlineKeyboardButton>;
+    descriptionButtonsInShoppingCart(productId: string): Promise<InlineKeyboardButton>;
 }
 
 export class ButtonsProductCard implements IButtonsProductCard {
@@ -25,7 +26,8 @@ export class ButtonsProductCard implements IButtonsProductCard {
         let arrayButtons: ReplyMarkup = {
             reply_markup: {
                 inline_keyboard: [[{ text: '➡️ Подробнее', callback_data: `more//${productId}` }],
-                                  [{ text: '⭐️ Оценить', callback_data: `feedback//${productId}` }]]
+                                  [{ text: '⭐️ Оценить', callback_data: `feedback//${productId}` }],
+                                  [await this.descriptionButtonsInShoppingCart(productId)]]
             }
         };
         return [categoryNameLeft, categoryName, arrayButtons]
@@ -44,15 +46,19 @@ export class ButtonsProductCard implements IButtonsProductCard {
         };
     }
 
-    async descriptionButtonsBack(productId: string): Promise<InlineKeyboardButton> {
-        return { text: 'Назад', callback_data: `${productId}`}
-    }
-
     async creatingButtonsBack(productId: string): Promise<ReplyMarkup> {
         return {
             reply_markup: {
                 inline_keyboard: [[await this.descriptionButtonsBack(productId)]]
             }
         };
+    }
+
+    async descriptionButtonsBack(productId: string): Promise<InlineKeyboardButton> {
+        return { text: 'Назад', callback_data: `${productId}` }
+    }
+
+    async descriptionButtonsInShoppingCart(productId: string): Promise<InlineKeyboardButton> {
+        return { text: '🛒 Отправить в корзину', callback_data: `inShoppingCart//${productId}` }
     }
 }

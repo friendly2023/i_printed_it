@@ -64,6 +64,7 @@ export interface ProductRepository {
     respondsProductName(productId: string): Promise<ProductName[]>;
     respondsOldFeedback(productId: string, userId: string): Promise<OldFeedback[]>;
     recordNewFeedback(productId: string, userId: string, newRating: number): Promise<void>;
+    recordInShoppingCart(productId: string, userId: string): Promise<void>;
 }
 
 export class RequestsToDB implements ProductRepository {
@@ -194,6 +195,26 @@ export class RequestsToDB implements ProductRepository {
         let requestUpdate: string = `UPDATE feedback
                                     SET rating = '${newRating}'
                                     WHERE user_id = '${userId}' AND product_id = '${productId}';`;
+
+        let reqVerification = await this.databaseRepository.executeQuery(requestVerification)
+
+        if (reqVerification.rows.length == 0) {
+            await this.databaseRepository.executeQuery(requestRecord)
+        } else {
+            await this.databaseRepository.executeQuery(requestUpdate)
+        }
+    }
+
+    async recordInShoppingCart(productId: string, userId: string): Promise<void> {
+        let requestVerification: string = `SELECT * FROM shoppingCart
+                                           WHERE user_id = '${userId}' AND product_id = '${productId}';`;
+
+        let requestRecord: string = `INSERT INTO shoppingCart (user_id, product_id, sum)
+                                     VALUES ('${userId}','${productId}', 1);`;
+
+        let requestUpdate: string = `UPDATE shoppingCart
+                                     SET sum = sum + 1
+                                     WHERE user_id = '${userId}' AND product_id = '${productId}';`;
 
         let reqVerification = await this.databaseRepository.executeQuery(requestVerification)
 

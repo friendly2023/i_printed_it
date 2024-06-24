@@ -112,6 +112,10 @@ export class MyBot implements MyBotInterface {
                 case 'newrating':
                     this.handleNewRating(chatId, text);
                     break;
+
+                case 'inShoppingCart':
+                    this.handleInShoppingCart(chatId, text);
+                    break;
             }
 
             if (text[0].match(/\d{4}/g)) {
@@ -211,6 +215,18 @@ export class MyBot implements MyBotInterface {
 Спасибо за отзыв!`;
 
         return await bot.sendMessage(chatId, message, await this.iButtonsProductCard.creatingButtonsBack(text[2]));
+    }
+
+    private async handleInShoppingCart(chatId: number, text: string[]) {
+        let userId: string = String(chatId);
+        let inShoppingCart = await this.productRepository.recordInShoppingCart(text[1], userId);
+        let nameProduct = await this.productRepository.respondsProductName(text[1]);
+
+        let message: string = `'${nameProduct[0].product_name}' добавлен(а) в корзину.
+Кол-во в корзине: ***`
+
+        return await bot.sendMessage(chatId, message);
+        //прикрутить кнопку перехода в корзину
     }
 }
 

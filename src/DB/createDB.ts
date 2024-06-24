@@ -47,7 +47,7 @@ let creatTablePurchaseHistory: string = `CREATE TABLE purchaseHistory (
 let creatTableShoppingCart: string = `CREATE TABLE shoppingCart (
     user_id varchar(20) NOT NULL,
     product_id varchar(6) NOT NULL,
-    sum varchar(6) NOT NULL
+    sum SMALLINT NOT NULL CHECK (sum >= 0 AND sum <= 100)
 );`;
 
 let creatTableFeedback: string = `CREATE TABLE feedback (
