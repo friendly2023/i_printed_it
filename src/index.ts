@@ -116,6 +116,10 @@ export class MyBot implements MyBotInterface {
                 case 'inShoppingCart':
                     this.handleInShoppingCart(chatId, text);
                     break;
+
+                case 'shoppingCart':
+                    this.handleShoppingCart(chatId);
+                    break;
             }
 
             if (text[0].match(/\d{4}/g)) {
@@ -221,11 +225,12 @@ export class MyBot implements MyBotInterface {
         let userId: string = String(chatId);
         let inShoppingCart = await this.productRepository.recordInShoppingCart(text[1], userId);
         let nameProduct = await this.productRepository.respondsProductName(text[1]);
+        let quantityProduct = await this.productRepository.respondsQuantityProduct(text[1], userId);
 
         let message: string = `'${nameProduct[0].product_name}' добавлен(а) в корзину.
-Кол-во в корзине: ***`
+Кол-во в корзине: ${quantityProduct[0].sum}`
 
-        return await bot.sendMessage(chatId, message);
+        return await bot.sendMessage(chatId, message, await this.iButtonsProductCard.descriptionButtonsShoppingCart());
         //прикрутить кнопку перехода в корзину
     }
 }

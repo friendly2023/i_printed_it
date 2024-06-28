@@ -7,6 +7,7 @@ export interface IButtonsProductCard {
     creatingButtonsBack(productId: string): Promise<ReplyMarkup>;
     descriptionButtonsBack(productId: string): Promise<InlineKeyboardButton>;
     descriptionButtonsInShoppingCart(productId: string): Promise<InlineKeyboardButton>;
+    descriptionButtonsShoppingCart(): Promise<ReplyMarkup>;
 }
 
 export class ButtonsProductCard implements IButtonsProductCard {
@@ -60,5 +61,13 @@ export class ButtonsProductCard implements IButtonsProductCard {
 
     async descriptionButtonsInShoppingCart(productId: string): Promise<InlineKeyboardButton> {
         return { text: '🛒 Отправить в корзину', callback_data: `inShoppingCart//${productId}` }
+    }
+
+    async descriptionButtonsShoppingCart(): Promise<ReplyMarkup> {
+        return {
+            reply_markup: {
+                inline_keyboard: [[{ text: '🛒 Перейти в корзину', callback_data: `shoppingCart` }]]
+            }
+        };
     }
 }

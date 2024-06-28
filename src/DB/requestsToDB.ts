@@ -50,6 +50,10 @@ class OldFeedback {
     rating!: number;
 }
 
+class QuantityProduct {
+    sum!: number;
+}
+
 export interface ProductRepository {
     respondsToMenuListProductNameId(): Promise<Product[]>;
     respondsToMenuListCategoryNameLeft(): Promise<CategoriesLeft[]>;
@@ -65,6 +69,7 @@ export interface ProductRepository {
     respondsOldFeedback(productId: string, userId: string): Promise<OldFeedback[]>;
     recordNewFeedback(productId: string, userId: string, newRating: number): Promise<void>;
     recordInShoppingCart(productId: string, userId: string): Promise<void>;
+    respondsQuantityProduct(productId: string, userId: string): Promise<QuantityProduct[]>;
 }
 
 export class RequestsToDB implements ProductRepository {
@@ -223,6 +228,14 @@ export class RequestsToDB implements ProductRepository {
         } else {
             await this.databaseRepository.executeQuery(requestUpdate)
         }
+    }
+
+    async respondsQuantityProduct(productId: string, userId: string): Promise<QuantityProduct[]> {
+        let query: string = `SELECT sum
+                            FROM shoppingCart
+                            WHERE user_id='${userId}' AND product_id='${productId}';`;
+
+        return (await this.databaseRepository.executeQuery(query)).rows;
     }
 }
 
