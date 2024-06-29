@@ -236,7 +236,7 @@ export class MyBot implements MyBotInterface {
         let quantityProduct = await this.productRepository.respondsQuantityProduct(text[1], userId);
 
         let message: string = `'${nameProduct[0].product_name}' добавлен(а) в корзину.
-Кол-во в корзине: ${quantityProduct[0].sum}`
+    Кол-во в корзине: ${quantityProduct[0].sum}`
 
         return await bot.sendMessage(chatId, message, await this.iButtonsProductCard.descriptionButtonsShoppingCart());
     }

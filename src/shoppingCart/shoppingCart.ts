@@ -12,24 +12,21 @@ export class ShoppingCart implements IShoppingCart {
         this.productRepository = productRepository;
     }
 
-    async displayShoppingCart(userId: string): Promise<string> {
-        let cart = this.dataShoppingCart(userId);
-        const formattedCart = (await cart).map((item, index) => {
+    async displayShoppingCart(userId: string): Promise<any> {
+        let dataFromDB: DataShoppingCart[] = await this.productRepository.respondsShoppingCart(userId);
+        let totalSum: number = dataFromDB.reduce((acc, item) => acc + item.sum, 0);
+        let totalPrice: number = dataFromDB.reduce((acc, item) => acc + Number(item.price), 0);
+
+        const list = dataFromDB.map((item, index) => {
             return `${index + 1}. '${item.product_name}' - ${item.sum} шт.`;
         }).join('\n');
-        return formattedCart;
-    }
 
-    private async dataShoppingCart(userId: string): Promise<DataShoppingCart[]> {
-        let dataFromDB: DataShoppingCart[] = await this.productRepository.respondsShoppingCart(userId);
-        let nameProducts: string[] = [];
+        let message = `${list}
+        
+    Итого: ${totalSum} шт.
+    Общая сумма: ${totalPrice} Р`;
 
-        for (let i = 0; i < dataFromDB.length; i++) {
-            let nameProduct: ProductName[] = await this.productRepository.respondsProductName(dataFromDB[i].product_id);
-            nameProducts.push(nameProduct[0].product_name);
-            dataFromDB[i].product_name = nameProducts[i];
-        }
-        return dataFromDB;
+        return message;
     }
 }
 

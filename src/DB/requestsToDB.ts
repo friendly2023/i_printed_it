@@ -56,9 +56,11 @@ class QuantityProduct {
 
 export class DataShoppingCart {
     product_id!: string;
+    product_name!: string;
     sum!: number;
-    product_name?: string;
+    price!: number;
 }
+
 export interface ProductRepository {
     respondsToMenuListProductNameId(): Promise<Product[]>;
     respondsToMenuListCategoryNameLeft(): Promise<CategoriesLeft[]>;
@@ -75,7 +77,7 @@ export interface ProductRepository {
     recordNewFeedback(productId: string, userId: string, newRating: number): Promise<void>;
     recordInShoppingCart(productId: string, userId: string): Promise<void>;
     respondsQuantityProduct(productId: string, userId: string): Promise<QuantityProduct[]>;
-    respondsShoppingCart(userId: string):Promise<DataShoppingCart[]>;
+    respondsShoppingCart(userId: string): Promise<DataShoppingCart[]>;
 }
 
 export class RequestsToDB implements ProductRepository {
@@ -245,8 +247,9 @@ export class RequestsToDB implements ProductRepository {
     }
 
     async respondsShoppingCart(userId: string): Promise<DataShoppingCart[]> {
-        let query: string = `SELECT product_id, sum
+        let query: string = `SELECT shoppingCart.product_id, products.product_name,shoppingCart.sum, products.price
                             FROM shoppingCart
+							INNER JOIN products ON shoppingCart.product_id=products.product_id
                             WHERE user_id='${userId}';`;
 
         return (await this.databaseRepository.executeQuery(query)).rows;
@@ -258,5 +261,5 @@ export class RequestsToDB implements ProductRepository {
 //     const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
 //     const queryExecutor = new RequestsToDB(databaseRepository);
 
-//     console.log(await queryExecutor.recordNewFeedback('0106', '412993464', 5));
+//     console.log(await queryExecutor.respondsShoppingCart('412993464'));
 // }
