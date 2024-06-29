@@ -54,6 +54,11 @@ class QuantityProduct {
     sum!: number;
 }
 
+export class DataShoppingCart {
+    product_id!: string;
+    sum!: number;
+    product_name?: string;
+}
 export interface ProductRepository {
     respondsToMenuListProductNameId(): Promise<Product[]>;
     respondsToMenuListCategoryNameLeft(): Promise<CategoriesLeft[]>;
@@ -70,6 +75,7 @@ export interface ProductRepository {
     recordNewFeedback(productId: string, userId: string, newRating: number): Promise<void>;
     recordInShoppingCart(productId: string, userId: string): Promise<void>;
     respondsQuantityProduct(productId: string, userId: string): Promise<QuantityProduct[]>;
+    respondsShoppingCart(userId: string):Promise<DataShoppingCart[]>;
 }
 
 export class RequestsToDB implements ProductRepository {
@@ -234,6 +240,14 @@ export class RequestsToDB implements ProductRepository {
         let query: string = `SELECT sum
                             FROM shoppingCart
                             WHERE user_id='${userId}' AND product_id='${productId}';`;
+
+        return (await this.databaseRepository.executeQuery(query)).rows;
+    }
+
+    async respondsShoppingCart(userId: string): Promise<DataShoppingCart[]> {
+        let query: string = `SELECT product_id, sum
+                            FROM shoppingCart
+                            WHERE user_id='${userId}';`;
 
         return (await this.databaseRepository.executeQuery(query)).rows;
     }

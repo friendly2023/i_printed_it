@@ -6,6 +6,7 @@ import { FigurineCard, FigurineCardRepository } from './productCard/figurineСar
 import { DatabaseConnection, DatabaseRepository } from './DB/query';
 import { ProductRepository, RequestsToDB } from './DB/requestsToDB';
 import { ButtonsProductCard, IButtonsProductCard } from './buttons/buttonsProductCard';
+import { IShoppingCart, ShoppingCart } from './shoppingCart/shoppingCart';
 
 class MenuItems {
     command!: string;
@@ -22,13 +23,19 @@ export class MyBot implements MyBotInterface {
     private figurineCardRepository: FigurineCardRepository;
     private productRepository: ProductRepository;
     private iButtonsProductCard: IButtonsProductCard;
+    private iShoppingCart: IShoppingCart;
 
-    constructor(menuRepository: MenuRepository, figurineCardRepository: FigurineCardRepository, productRepository: ProductRepository, iButtonsProductCard: IButtonsProductCard) {
+    constructor(menuRepository: MenuRepository,
+        figurineCardRepository: FigurineCardRepository,
+        productRepository: ProductRepository,
+        iButtonsProductCard: IButtonsProductCard,
+        iShoppingCart: IShoppingCart) {
         this.bot = bot;
         this.menuRepository = menuRepository;
         this.figurineCardRepository = figurineCardRepository;
         this.productRepository = productRepository;
         this.iButtonsProductCard = iButtonsProductCard;
+        this.iShoppingCart = iShoppingCart;
         this.outputMessage();
     }
 
@@ -138,7 +145,8 @@ export class MyBot implements MyBotInterface {
     };
 
     private async handleShoppingCart(chatId: number) {
-        return await this.bot.sendMessage(chatId, `Здесь будет корзина`);
+        let userId: string = String(chatId);
+        return await this.bot.sendMessage(chatId, await this.iShoppingCart.displayShoppingCart(userId));
     }
 
     private async handleMenuList(chatId: number) {
@@ -231,7 +239,6 @@ export class MyBot implements MyBotInterface {
 Кол-во в корзине: ${quantityProduct[0].sum}`
 
         return await bot.sendMessage(chatId, message, await this.iButtonsProductCard.descriptionButtonsShoppingCart());
-        //прикрутить кнопку перехода в корзину
     }
 }
 
@@ -241,8 +248,9 @@ async function createMessageInstance() {
     const menuRepository: MenuRepository = new MenuButtons(productRepository);
     const iButtonsProductCard: IButtonsProductCard = new ButtonsProductCard(productRepository);
     const figurineCardRepository: FigurineCardRepository = new FigurineCard(productRepository);
+    const shoppingCart: IShoppingCart = new ShoppingCart(productRepository);
 
-    const message = new MyBot(menuRepository, figurineCardRepository, productRepository, iButtonsProductCard);
+    const message = new MyBot(menuRepository, figurineCardRepository, productRepository, iButtonsProductCard, shoppingCart);
     return message;
 }
 
