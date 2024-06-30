@@ -1,5 +1,5 @@
-import { ProductRepository, ProductsDescription2 } from "../DB/requestsToDB";
-import { InlineKeyboardButton, ReplyMarkup } from "./buttonsMenu";
+import { Product, ProductRepository, ProductsDescription2 } from "../DB/requestsToDB";
+import { InlineKeyboardButton, MenuRepository, ReplyMarkup } from "./buttonsMenu";
 
 export interface IButtonsProductCard {
     creatingBasicButtons(productId: string): Promise<[string, string, ReplyMarkup]>;
@@ -7,15 +7,19 @@ export interface IButtonsProductCard {
     creatingButtonsBack(productId: string): Promise<ReplyMarkup>;
     descriptionButtonsBack(productId: string): Promise<InlineKeyboardButton>;
     descriptionButtonsInShoppingCart(productId: string): Promise<InlineKeyboardButton>;
+    descriptionButtonsSendingInShoppingCart(): Promise<ReplyMarkup>;
     descriptionButtonsShoppingCart(): Promise<ReplyMarkup>;
+    descriptionButtonsEditingShoppingCart(userId: string): Promise<ReplyMarkup>;
 }
 
 export class ButtonsProductCard implements IButtonsProductCard {
 
     private productRepository: ProductRepository;
+    private menuRepository: MenuRepository;
 
-    constructor(productRepository: ProductRepository) {
+    constructor(productRepository: ProductRepository, menuRepository: MenuRepository) {
         this.productRepository = productRepository;
+        this.menuRepository = menuRepository;
     }
 
     //кнопки для карточки товара - сообщение 2
@@ -63,11 +67,27 @@ export class ButtonsProductCard implements IButtonsProductCard {
         return { text: '🛒 Отправить в корзину', callback_data: `inShoppingCart//${productId}` }
     }
 
-    async descriptionButtonsShoppingCart(): Promise<ReplyMarkup> {
+    async descriptionButtonsSendingInShoppingCart(): Promise<ReplyMarkup> {
         return {
             reply_markup: {
                 inline_keyboard: [[{ text: '🛒 Перейти в корзину', callback_data: `shoppingCart` }]]
             }
         };
+    }
+
+    async descriptionButtonsShoppingCart(): Promise<ReplyMarkup> {
+        return {
+            reply_markup: {
+                inline_keyboard: [[{ text: 'Оформить заказ', callback_data: `placeAnOrder` }],
+                                  [{ text: 'Редактировать корзину', callback_data: `editShoppingCart` }],
+                                  [{ text: 'Очистить корзину', callback_data: `clearShoppingCart` }]]
+            }
+        };
+    }
+    
+    async descriptionButtonsEditingShoppingCart(userId: string): Promise<any> {
+        let dataShoppingCart: Product[] = await this.productRepository.respondsForEditingShoppingCart(userId);
+        const keys = Object.keys(dataShoppingCart[0]);
+        return this.menuRepository.creatingInlineKeyboardButton(keys[1], keys[0], dataShoppingCart, 'editingShoppingCart//');
     }
 }

@@ -3,6 +3,7 @@ import { DataShoppingCart, ProductName, ProductRepository, RequestsToDB } from "
 
 export interface IShoppingCart {
     displayShoppingCart(userId: string): Promise<string>;
+    messageForEmptyShoppingCart(): string;
 }
 
 export class ShoppingCart implements IShoppingCart {
@@ -14,6 +15,19 @@ export class ShoppingCart implements IShoppingCart {
 
     async displayShoppingCart(userId: string): Promise<any> {
         let dataFromDB: DataShoppingCart[] = await this.productRepository.respondsShoppingCart(userId);
+
+        if (dataFromDB.length == 0) {
+            return this.messageForEmptyShoppingCart();
+        } else {
+            return this.notEmptyShoppingCart(dataFromDB);
+        }
+    }
+
+    messageForEmptyShoppingCart() {
+        return '🛒Ваша корзина пуста';
+    }
+
+    private notEmptyShoppingCart(dataFromDB: DataShoppingCart[]): string {
         let totalSum: number = dataFromDB.reduce((acc, item) => acc + item.sum, 0);
         let totalPrice: number = dataFromDB.reduce((acc, item) => acc + Number(item.price), 0);
 
@@ -21,7 +35,8 @@ export class ShoppingCart implements IShoppingCart {
             return `${index + 1}. '${item.product_name}' - ${item.sum} шт.`;
         }).join('\n');
 
-        let message = `${list}
+        let message: string = `🛒 Ваша корзина
+${list}
         
     Итого: ${totalSum} шт.
     Общая сумма: ${totalPrice} Р`;

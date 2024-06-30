@@ -78,6 +78,9 @@ export interface ProductRepository {
     recordInShoppingCart(productId: string, userId: string): Promise<void>;
     respondsQuantityProduct(productId: string, userId: string): Promise<QuantityProduct[]>;
     respondsShoppingCart(userId: string): Promise<DataShoppingCart[]>;
+    deleteShoppingCart(userId: string): Promise<void>;
+    respondsForEditingShoppingCart(userId: string): Promise<Product[]>;
+    delete1ShoppingCart(productId: string, userId: string): Promise<void>;
 }
 
 export class RequestsToDB implements ProductRepository {
@@ -254,6 +257,29 @@ export class RequestsToDB implements ProductRepository {
 
         return (await this.databaseRepository.executeQuery(query)).rows;
     }
+
+    async deleteShoppingCart(userId: string): Promise<void> {
+        let query: string = `DELETE FROM shoppingCart
+                            WHERE user_id='${userId}';`;
+
+        await this.databaseRepository.executeQuery(query);
+    }
+
+    async respondsForEditingShoppingCart(userId: string): Promise<Product[]> {
+        let query: string = `SELECT shoppingCart.product_id, products.product_name
+                            FROM shoppingCart
+                            INNER JOIN products ON shoppingCart.product_id=products.product_id
+                            WHERE user_id='${userId}';`;
+
+        return (await this.databaseRepository.executeQuery(query)).rows;
+    }
+
+    async delete1ShoppingCart(productId: string, userId: string): Promise<void> {
+        let query: string = `DELETE FROM shoppingCart
+                            WHERE user_id='${userId}' and product_id='${productId}';`;
+
+        await this.databaseRepository.executeQuery(query);
+    }
 }
 
 // checkingRequests()
@@ -261,5 +287,5 @@ export class RequestsToDB implements ProductRepository {
 //     const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
 //     const queryExecutor = new RequestsToDB(databaseRepository);
 
-//     console.log(await queryExecutor.respondsShoppingCart('412993464'));
+//     console.log(await queryExecutor.respondsForEditingShoppingCart('412993464'));
 // }

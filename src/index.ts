@@ -127,6 +127,22 @@ export class MyBot implements MyBotInterface {
                 case 'shoppingCart':
                     this.handleShoppingCart(chatId);
                     break;
+
+                // case 'placeAnOrder':
+                //     this.handlePlaceAnOrder(chatId);
+                //     break;
+
+                case 'editShoppingCart':
+                    this.handleEditShoppingCart(chatId);
+                    break;
+
+                case 'editingShoppingCart':
+                    this.handleEditingShoppingCart(chatId, text);
+                    break;
+
+                case 'clearShoppingCart':
+                    this.handleClearShoppingCart(chatId);
+                    break;
             }
 
             if (text[0].match(/\d{4}/g)) {
@@ -146,7 +162,14 @@ export class MyBot implements MyBotInterface {
 
     private async handleShoppingCart(chatId: number) {
         let userId: string = String(chatId);
-        return await this.bot.sendMessage(chatId, await this.iShoppingCart.displayShoppingCart(userId));
+        let message: string = await this.iShoppingCart.displayShoppingCart(userId);
+
+        if (message == this.iShoppingCart.messageForEmptyShoppingCart()) {
+            return await this.bot.sendMessage(chatId, message);
+        } else {
+            return await this.bot.sendMessage(chatId, await this.iShoppingCart.displayShoppingCart(userId),
+                await this.iButtonsProductCard.descriptionButtonsShoppingCart());
+        }
     }
 
     private async handleMenuList(chatId: number) {
@@ -238,7 +261,28 @@ export class MyBot implements MyBotInterface {
         let message: string = `'${nameProduct[0].product_name}' добавлен(а) в корзину.
     Кол-во в корзине: ${quantityProduct[0].sum}`
 
-        return await bot.sendMessage(chatId, message, await this.iButtonsProductCard.descriptionButtonsShoppingCart());
+        return await bot.sendMessage(chatId, message, await this.iButtonsProductCard.descriptionButtonsSendingInShoppingCart());
+    }
+
+    private async handleEditShoppingCart(chatId: number) {
+        let userId: string = String(chatId);
+        let message:string = 'Выберете товар для удаления:';
+
+        return await bot.sendMessage(chatId, message, await this.iButtonsProductCard.descriptionButtonsEditingShoppingCart(userId));
+    }
+
+    private async handleEditingShoppingCart(chatId: number, text: string[]) {
+        let userId: string = String(chatId);
+        await this.productRepository.delete1ShoppingCart(text[1], userId);
+
+        return await bot.sendMessage(chatId, 'Позиция удалена', await this.iButtonsProductCard.descriptionButtonsSendingInShoppingCart());
+    }
+
+    private async handleClearShoppingCart(chatId: number) {
+        let userId: string = String(chatId);
+        await this.productRepository.deleteShoppingCart(userId);
+
+        return await bot.sendMessage(chatId, '*Корзина очищена*', await this.iButtonsProductCard.descriptionButtonsSendingInShoppingCart());
     }
 }
 
@@ -246,7 +290,7 @@ async function createMessageInstance() {
     const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
     const productRepository: ProductRepository = new RequestsToDB(databaseRepository);
     const menuRepository: MenuRepository = new MenuButtons(productRepository);
-    const iButtonsProductCard: IButtonsProductCard = new ButtonsProductCard(productRepository);
+    const iButtonsProductCard: IButtonsProductCard = new ButtonsProductCard(productRepository, menuRepository);
     const figurineCardRepository: FigurineCardRepository = new FigurineCard(productRepository);
     const shoppingCart: IShoppingCart = new ShoppingCart(productRepository);
 
