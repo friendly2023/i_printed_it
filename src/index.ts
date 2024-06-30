@@ -8,6 +8,8 @@ import { ProductRepository, RequestsToDB } from './DB/requestsToDB';
 import { ButtonsProductCard, IButtonsProductCard } from './buttons/buttonsProductCard';
 import { IShoppingCart, ShoppingCart } from './shoppingCart/shoppingCart';
 
+let myTelegramId: string = '412993464';
+
 class MenuItems {
     command!: string;
     description!: string;
@@ -128,9 +130,9 @@ export class MyBot implements MyBotInterface {
                     this.handleShoppingCart(chatId);
                     break;
 
-                // case 'placeAnOrder':
-                //     this.handlePlaceAnOrder(chatId);
-                //     break;
+                case 'placeAnOrder':
+                    this.handlePlaceAnOrder(chatId);
+                    break;
 
                 case 'editShoppingCart':
                     this.handleEditShoppingCart(chatId);
@@ -283,6 +285,29 @@ export class MyBot implements MyBotInterface {
         await this.productRepository.deleteShoppingCart(userId);
 
         return await bot.sendMessage(chatId, '*Корзина очищена*', await this.iButtonsProductCard.descriptionButtonsSendingInShoppingCart());
+    }
+
+    private async handlePlaceAnOrder(chatId: number) {
+        let userId: string = String(chatId);
+        let messageToUser = await this.sendingMessageToUser(chatId);
+        let messageToMe = await this.sendingMessageToMe(userId);
+    }
+
+    private async sendingMessageToUser(chatId: number) {
+        let message: string = `Ваш заказ оформлен. С вами свяжутся ближайшие 3 дня для согласования места, сроков и способа доставки.
+Спасибо за заказ.`
+
+        return await bot.sendMessage(chatId, message);
+    }
+
+    private async sendingMessageToMe(userId: string) {
+        let shoppingCartUser = await this.iShoppingCart.displayShoppingCart(userId);
+        let messageToMe: string = `Заказ от пользователя: ${userId}
+*Заказ:
+${shoppingCartUser}`;
+
+        await this.productRepository.deleteShoppingCart(userId);
+        return await bot.sendMessage(myTelegramId, messageToMe);
     }
 }
 

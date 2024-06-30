@@ -39,7 +39,7 @@ export class ShoppingCart implements IShoppingCart {
 ${list}
         
     Итого: ${totalSum} шт.
-    Общая сумма: ${totalPrice} Р`;
+    Общая сумма: ${totalPrice} Р (Без учета доставки)`;
 
         return message;
     }

@@ -64,7 +64,7 @@ export class ButtonsProductCard implements IButtonsProductCard {
     }
 
     async descriptionButtonsInShoppingCart(productId: string): Promise<InlineKeyboardButton> {
-        return { text: '🛒 Отправить в корзину', callback_data: `inShoppingCart//${productId}` }
+        return { text: '🛒 Добавить в корзину', callback_data: `inShoppingCart//${productId}` }
     }
 
     async descriptionButtonsSendingInShoppingCart(): Promise<ReplyMarkup> {
