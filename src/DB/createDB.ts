@@ -2,6 +2,7 @@ import { DatabaseConnection } from './query'
 
 let creatTableUsers: string = `CREATE TABLE users (
     user_id varchar(20) PRIMARY KEY,
+    first_name varchar(33) NOT NULL,
     user_name varchar(33) NOT NULL
 );`;
 

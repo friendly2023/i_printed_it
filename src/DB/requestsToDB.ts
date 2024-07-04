@@ -81,6 +81,8 @@ export interface ProductRepository {
     deleteShoppingCart(userId: string): Promise<void>;
     respondsForEditingShoppingCart(userId: string): Promise<Product[]>;
     delete1ShoppingCart(productId: string, userId: string): Promise<void>;
+    recordsIdUserAndUserName(userId: string, firstName:string, userName: string): Promise<void>;
+    recordsShoppingCartUser(userId: string, shoppingCartUser: string): Promise<void>;
 }
 
 export class RequestsToDB implements ProductRepository {
@@ -280,6 +282,33 @@ export class RequestsToDB implements ProductRepository {
 
         await this.databaseRepository.executeQuery(query);
     }
+
+    async recordsIdUserAndUserName(userId: string, firstName: string, userName: string): Promise<void> {
+        let requestVerification: string = `SELECT * FROM users 
+                                           WHERE user_id = '${userId}';`;
+
+        let requestRecord: string = `INSERT INTO users (user_id, first_name, user_name)
+                                     VALUES ('${userId}','${firstName}', '${userName}');`;
+
+        let requestUpdate: string = `UPDATE users
+                                     SET first_name='${firstName}', user_name='${userName}'
+                                     WHERE user_id = '${userId}'`;
+
+        let reqVerification = await this.databaseRepository.executeQuery(requestVerification)
+
+        if (reqVerification.rows.length == 0) {
+            await this.databaseRepository.executeQuery(requestRecord)
+        } else {
+            await this.databaseRepository.executeQuery(requestUpdate)
+        }
+    }
+
+    async recordsShoppingCartUser(userId: string, shoppingCartUser: string): Promise<void> {
+        let query: string = `INSERT INTO purchaseHistory (user_id, shopping_list)
+                            VALUES ('${userId}','${shoppingCartUser}');`;
+
+        await this.databaseRepository.executeQuery(query);
+    }
 }
 
 // checkingRequests()
@@ -287,5 +316,5 @@ export class RequestsToDB implements ProductRepository {
 //     const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
 //     const queryExecutor = new RequestsToDB(databaseRepository);
 
-//     console.log(await queryExecutor.respondsProductName('0106'));
+//     console.log(await queryExecutor.recordsIdUserAndUserName('0106', '2', '8888'));
 // }

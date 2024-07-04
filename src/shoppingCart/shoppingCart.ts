@@ -4,6 +4,7 @@ import { DataShoppingCart, ProductName, ProductRepository, RequestsToDB } from "
 export interface IShoppingCart {
     displayShoppingCart(userId: string): Promise<string>;
     messageForEmptyShoppingCart(): string;
+    orderShoppingCart(userId: string): Promise<string>;
 }
 
 export class ShoppingCart implements IShoppingCart {
@@ -43,6 +44,25 @@ ${list}
 
         return message;
     }
+
+    async orderShoppingCart(userId: string): Promise<string> {
+        let dataFromDB: DataShoppingCart[] = await this.productRepository.respondsShoppingCart(userId);
+
+        let totalSum: number = dataFromDB.reduce((acc, item) => acc + item.sum, 0);
+        let totalPrice: number = dataFromDB.reduce((acc, item) => acc + Number(item.price), 0);
+
+        const list = dataFromDB.map((item, index) => {
+            return `${index + 1}. ${item.product_name} - ${item.sum} шт.`;
+        }).join('\n');
+
+        let message: string = `Корзина заказа:
+${list}
+        
+    Итого: ${totalSum} шт.
+    Общая сумма: ${totalPrice} Р (Без учета доставки)`;
+
+        return message;
+    }
 }
 
 // checkingRequests()
@@ -51,5 +71,5 @@ ${list}
 //     const queryExecutor: ProductRepository = new RequestsToDB(databaseRepository);
 //     const shoppingCart: IShoppingCart = new ShoppingCart(queryExecutor);
 
-//     console.log(await shoppingCart.displayShoppingCart('412993464'));
+//     console.log(await shoppingCart.orderShoppingCart('412993464'));
 // }
