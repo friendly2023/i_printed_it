@@ -81,9 +81,10 @@ export class MyBot implements MyBotInterface {
             }
         });
 
-        this.bot.on('callback_query', async (msg: { message: { chat: { id: number; }; }; data: string; }) => {
+        this.bot.on('callback_query', async (msg: { message: { chat: { id: number; username: string }; }; data: string; }) => {
             const chatId: number = msg.message.chat.id;
             const text: string[] = msg.data.split(/\/{2}/g);
+            const userName: string = msg.message.chat.username;
 
             switch (text[0]) {
                 case 'menuList':
@@ -131,7 +132,7 @@ export class MyBot implements MyBotInterface {
                     break;
 
                 case 'placeAnOrder':
-                    this.handlePlaceAnOrder(chatId);
+                    this.handlePlaceAnOrder(chatId, userName);
                     break;
 
                 case 'editShoppingCart':
@@ -287,10 +288,10 @@ export class MyBot implements MyBotInterface {
         return await bot.sendMessage(chatId, '*Корзина очищена*', await this.iButtonsProductCard.descriptionButtonsSendingInShoppingCart());
     }
 
-    private async handlePlaceAnOrder(chatId: number) {
+    private async handlePlaceAnOrder(chatId: number, userName: string) {
         let userId: string = String(chatId);
         let messageToUser = await this.sendingMessageToUser(chatId);
-        let messageToMe = await this.sendingMessageToMe(userId);
+        let messageToMe = await this.sendingMessageToMe(userId, userName);
     }
 
     private async sendingMessageToUser(chatId: number) {
@@ -300,9 +301,9 @@ export class MyBot implements MyBotInterface {
         return await bot.sendMessage(chatId, message);
     }
 
-    private async sendingMessageToMe(userId: string) {
-        let shoppingCartUser = await this.iShoppingCart.displayShoppingCart(userId);
-        let messageToMe: string = `Заказ от пользователя: ${userId}
+    private async sendingMessageToMe(userId: string, userName: string) {
+        let shoppingCartUser = await this.iShoppingCart.displayShoppingCart(userName);
+        let messageToMe: string = `Заказ от пользователя: @${userName}
 *Заказ:
 ${shoppingCartUser}`;
 
