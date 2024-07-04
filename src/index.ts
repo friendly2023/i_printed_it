@@ -81,11 +81,12 @@ export class MyBot implements MyBotInterface {
             }
         });
 
-        this.bot.on('callback_query', async (msg: { message: { chat: { id: number; username: string }; }; data: string; }) => {
+        this.bot.on('callback_query', async (msg: { message: { chat: { id: number; first_name: string; username: string }; }; data: string; }) => {
             const chatId: number = msg.message.chat.id;
             const text: string[] = msg.data.split(/\/{2}/g);
             const userName: string = msg.message.chat.username;
-
+            const firstName: string =msg.message.chat.first_name;
+            
             switch (text[0]) {
                 case 'menuList':
                     this.handleMenuList(chatId);
@@ -132,7 +133,7 @@ export class MyBot implements MyBotInterface {
                     break;
 
                 case 'placeAnOrder':
-                    this.handlePlaceAnOrder(chatId, userName);
+                    this.handlePlaceAnOrder(chatId, firstName, userName);
                     break;
 
                 case 'editShoppingCart':
@@ -288,10 +289,10 @@ export class MyBot implements MyBotInterface {
         return await bot.sendMessage(chatId, '*Корзина очищена*', await this.iButtonsProductCard.descriptionButtonsSendingInShoppingCart());
     }
 
-    private async handlePlaceAnOrder(chatId: number, userName: string) {
+    private async handlePlaceAnOrder(chatId: number, firstName:string, userName: string) {
         let userId: string = String(chatId);
         let messageToUser = await this.sendingMessageToUser(chatId);
-        let messageToMe = await this.sendingMessageToMe(userId, userName);
+        let messageToMe = await this.sendingMessageToMe(userId, firstName, userName);
     }
 
     private async sendingMessageToUser(chatId: number) {
@@ -301,13 +302,16 @@ export class MyBot implements MyBotInterface {
         return await bot.sendMessage(chatId, message);
     }
 
-    private async sendingMessageToMe(userId: string, userName: string) {
-        let shoppingCartUser = await this.iShoppingCart.displayShoppingCart(userName);
+    private async sendingMessageToMe(userId: string, firstName:string, userName: string) {
+        let upUserName = await this.productRepository.recordsIdUserAndUserName(userId, firstName, userName);
+
+        let shoppingCartUser = await this.iShoppingCart.displayShoppingCart(userId);
+
         let messageToMe: string = `Заказ от пользователя: @${userName}
 *Заказ:
 ${shoppingCartUser}`;
 
-        await this.productRepository.deleteShoppingCart(userId);
+        let delShoppingCartUser = await this.productRepository.deleteShoppingCart(userId);
         return await bot.sendMessage(myTelegramId, messageToMe);
     }
 }
