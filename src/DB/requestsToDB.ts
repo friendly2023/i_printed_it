@@ -287,5 +287,5 @@ export class RequestsToDB implements ProductRepository {
 //     const databaseRepository: DatabaseRepository = await DatabaseConnection.getInstance();
 //     const queryExecutor = new RequestsToDB(databaseRepository);
 
-//     console.log(await queryExecutor.respondsForEditingShoppingCart('412993464'));
+//     console.log(await queryExecutor.respondsProductName('0106'));
 // }
