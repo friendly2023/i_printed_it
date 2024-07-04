@@ -36,7 +36,7 @@ export class FigurineCard implements FigurineCardRepository {
             return '0 / 0'
         } else {
             let averageRating: number = result.reduce((sum, item) => sum + item.rating, 0) / result.length;
-            return `${averageRating} / 5`
+            return `${averageRating.toFixed(1)} / 5`
         }
     }
 
