@@ -82,6 +82,7 @@ export interface ProductRepository {
     respondsForEditingShoppingCart(userId: string): Promise<Product[]>;
     delete1ShoppingCart(productId: string, userId: string): Promise<void>;
     recordsIdUserAndUserName(userId: string, firstName:string, userName: string): Promise<void>;
+    recordsShoppingCartUser(userId: string, shoppingCartUser: string): Promise<void>;
 }
 
 export class RequestsToDB implements ProductRepository {
@@ -300,6 +301,13 @@ export class RequestsToDB implements ProductRepository {
         } else {
             await this.databaseRepository.executeQuery(requestUpdate)
         }
+    }
+
+    async recordsShoppingCartUser(userId: string, shoppingCartUser: string): Promise<void> {
+        let query: string = `INSERT INTO purchaseHistory (user_id, shopping_list)
+                            VALUES ('${userId}','${shoppingCartUser}');`;
+
+        await this.databaseRepository.executeQuery(query);
     }
 }
 

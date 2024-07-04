@@ -303,9 +303,10 @@ export class MyBot implements MyBotInterface {
     }
 
     private async sendingMessageToMe(userId: string, firstName:string, userName: string) {
-        let upUserName = await this.productRepository.recordsIdUserAndUserName(userId, firstName, userName);
-
-        let shoppingCartUser = await this.iShoppingCart.displayShoppingCart(userId);
+        let upUserName: void = await this.productRepository.recordsIdUserAndUserName(userId, firstName, userName);
+        let shoppingCartUser: string = await this.iShoppingCart.orderShoppingCart(userId);
+        let JSONshoppingCartUser = JSON.stringify(shoppingCartUser);
+        let recordsAboutShoppingCartUser = await this.productRepository.recordsShoppingCartUser(userId, JSONshoppingCartUser);
 
         let messageToMe: string = `Заказ от пользователя: @${userName}
 *Заказ:
