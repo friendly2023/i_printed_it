@@ -1,8 +1,10 @@
 import {
-    RequestsToDB,
     ProductsPhoto,
-    ProductsDescription,
+    ProductsDescription1,
     ProductRepository,
+    FeedbackRating,
+    Description,
+    ProductName,
 } from '../DB/requestsToDB';
 
 class ArrayPhotos {
@@ -13,6 +15,7 @@ class ArrayPhotos {
 
 export interface FigurineCardRepository {
     writingMessageToPhoto(productId: string): Promise<ArrayPhotos[]>;
+    writingMessageWithDescription(productId: string): Promise<string>;
 }
 
 export class FigurineCard implements FigurineCardRepository {
@@ -26,17 +29,29 @@ export class FigurineCard implements FigurineCardRepository {
         return await this.productRepository.respondsImagePath(productId);
     }
 
-    private async resultProductCard(productId: string): Promise<ProductsDescription[]> {
-        return await this.productRepository.respondsProductCard(productId);
+    private async resultFeedbackRating(productId: string): Promise<string> {
+        let result: FeedbackRating[] = await this.productRepository.respondsFeedbackRating(productId);
+
+        if (result.length == 0) {
+            return '0 / 0'
+        } else {
+            let averageRating: number = result.reduce((sum, item) => sum + item.rating, 0) / result.length;
+            return `${averageRating.toFixed(1)} / 5`
+        }
     }
 
     async writingMessageToPhoto(productId: string): Promise<ArrayPhotos[]> {
-        let result = await this.resultProductCard(productId);
-        let messageToPhoto: string = `"${result[0].product_name}"
-Описание: ${result[0].product_description}
-Стоимость: ${result[0].price} Р`;
+        let card1: ProductsDescription1[] = await this.productRepository.respondsProductCard1(productId);
+        let rating = await this.resultFeedbackRating(productId);
+        let qwerrt = await this.resultRespondsImagePath(productId);
 
-        return (await this.resultRespondsImagePath(productId)).map((item, index) => {
+        let messageToPhoto: string = `'${card1[0].product_name}'
+
+⭐️ ${rating}
+
+💰 ${card1[0].price}`;
+
+        return qwerrt.map((item, index) => {
             if (index === 0) {
                 return {
                     type: 'photo',
@@ -50,5 +65,16 @@ export class FigurineCard implements FigurineCardRepository {
                 };
             }
         });
+    }
+
+    async writingMessageWithDescription(productId: string): Promise<string> {
+        let description: Description[] = await this.productRepository.respondsDescription(productId);
+        let productName: ProductName[] = await this.productRepository.respondsProductName(productId);
+
+        let message: string = `'${productName[0].product_name}'
+➡️ Описание:
+${description[0].product_description}`;
+
+        return message;
     }
 }

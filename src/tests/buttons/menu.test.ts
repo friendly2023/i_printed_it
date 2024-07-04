@@ -1,5 +1,5 @@
 import { ProductRepository } from '../../DB/requestsToDB';
-import { MenuButtons } from '../../buttons/menu';
+import { MenuButtons } from '../../buttons/buttonsMenu';
 
 describe('MenuButtons', () => {
   let productRepository: Partial<ProductRepository>;

@@ -195,14 +195,20 @@ async function checkingRequests() {
     let categoryL='Аниме';
     let category='ДжоДжо';
 
-    let productId = '0113';
+    let productId = '0106';
     let productName = 'какое-то имя';
     let productPrice = 1000;
 
     let description = 'какое-то описание'
 
-    let newPhotoData: string[][] = [['0087', 'https://disk.yandex.ru/i/zpLjix74hX-a6Q', '1'],
-                                    ['0087', 'https://disk.yandex.ru/i/-6tkkT9X17gJ2A', '2']];
+    let newPhotoData: string[][] = [[`${productId}`, 'https://disk.yandex.ru/i/Xn8jIOCBnKPucw', '1'],
+                                    [`${productId}`, 'https://disk.yandex.ru/i/XZ0apjlfl7HTig', '2'],
+                                    [`${productId}`, 'https://disk.yandex.ru/i/yrKlsKon6aJegA', '3'],
+                                    [`${productId}`, 'https://disk.yandex.ru/i/629JL9Ns4P0iBA', '4'],
+                                    [`${productId}`, 'https://disk.yandex.ru/i/pbCNchVQ_jyc1A', '5'],
+                                    [`${productId}`, 'https://disk.yandex.ru/i/1hpekhqyt4sd2w', '6'],
+                                    [`${productId}`, 'https://disk.yandex.ru/i/3MbOSQUWhudfGw', '7'],
+                                    [`${productId}`, 'https://disk.yandex.ru/i/AbC39Kj5OJITYg', '8']];
 
     // console.log(await queryExecutor.newCategory(categoryL, category));
     // console.log(await queryExecutor.newProduct(productId, productName, productPrice));
@@ -211,7 +217,7 @@ async function checkingRequests() {
 
     // console.log(await queryExecutor.updateProduct(productId, productName, productPrice));
     // console.log(await queryExecutor.updateDescription(productId, description));
-    // console.log(await queryExecutor.updatePhoto(newPhotoData));
+    console.log(await queryExecutor.updatePhoto(newPhotoData));
     // console.log(await queryExecutor.checkingAccess(productId));
 }
 

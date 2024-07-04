@@ -1,13 +1,13 @@
 import {
-    RequestsToDB,
     Product,
     CategoriesLeft,
     ProductsCatalog,
     CategoryName,
-    ProductRepository
+    ProductRepository,
+    ProductsDescription2
 } from '../DB/requestsToDB';
 
-class InlineKeyboardButton {
+export class InlineKeyboardButton {
     text!: string;
     callback_data!: string;
 }
@@ -19,6 +19,7 @@ export class ReplyMarkup {
 }
 
 export interface MenuRepository {
+    creatingInlineKeyboardButton(keys1: string, keys2: string, data: any, callbackToken?: string): Promise<ReplyMarkup>;
     creatingMenuButtons(): Promise<ReplyMarkup>;
     creatingMenuListProductNameIdButtons(): Promise<ReplyMarkup>;
     creatingMenuListCategoryNameLeftButtons(): Promise<ReplyMarkup>;
@@ -37,7 +38,7 @@ export class MenuButtons implements MenuRepository {
     }
 
     //создание кнопки
-    private async creatingInlineKeyboardButton(keys1: string, keys2: string, data: any, callbackToken?: string): Promise<ReplyMarkup> {
+    async creatingInlineKeyboardButton(keys1: string, keys2: string, data: any, callbackToken?: string): Promise<ReplyMarkup> {
         return new Promise((resolve) => {
             const inlineKeyboard: InlineKeyboardButton[][] = data.map((item: any) => [
                 {

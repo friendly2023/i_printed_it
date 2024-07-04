@@ -1,7 +1,7 @@
 import TelegramApi, { Message } from 'node-telegram-bot-api';
 import { MyBot } from '../index'
 import { ProductRepository, RequestsToDB } from '../DB/requestsToDB';
-import { MenuRepository, ReplyMarkup } from '../buttons/menu';
+import { MenuRepository, ReplyMarkup } from '../buttons/buttonsMenu';
 import { FigurineCardRepository } from '../productCard/figurineСard';
 import { Update, CallbackQuery } from 'node-telegram-bot-api';
 
@@ -22,7 +22,8 @@ describe('MyBot', () => {
       selectionRandomProduct: jest.fn().mockReturnValue(Promise.resolve('Случайный продукт')),
       creatingMenuListByCategoryButtons: jest.fn().mockReturnValue(Promise.resolve({} as ReplyMarkup)),
       creatingMenuListCategoryNameButtons: jest.fn().mockReturnValue(Promise.resolve({} as ReplyMarkup)),
-      creatingMenuListProductNameIdSubcategoryButtons: jest.fn().mockReturnValue(Promise.resolve({} as ReplyMarkup))
+      creatingMenuListProductNameIdSubcategoryButtons: jest.fn().mockReturnValue(Promise.resolve({} as ReplyMarkup)),
+      creatingFigurineCardButtons: jest.fn().mockReturnValue(Promise.resolve({} as [string, ReplyMarkup]))
     };
 
     mockFigurineCardRepository = {
@@ -90,9 +91,19 @@ describe('MyBot', () => {
           { image_path: 'Path 3' },
         ])
       ),
-      respondsProductCard: jest.fn().mockReturnValue(
+      respondsProductCard1: jest.fn().mockReturnValue(
         Promise.resolve([
-          { product_name: 'Product A', product_description: 'Description A', price: '1000' }
+          //реализация
+        ])
+      ),
+      respondsProductCard2: jest.fn().mockReturnValue(
+        Promise.resolve([
+          //реализация
+        ])
+      ),
+      respondsFeedbackRating: jest.fn().mockReturnValue(
+        Promise.resolve([
+          //реализация
         ])
       )
     };
